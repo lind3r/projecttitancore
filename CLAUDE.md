@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Project Titan Core** is a NeoForge Minecraft mod (mod ID: `projecttitancore`) targeting Minecraft 1.21.1 with NeoForge 21.1.228. The mod source lives in the `mod/` subdirectory. Java 21 is required.
+**Project Titan Core** is a NeoForge Minecraft mod (mod ID: `projecttitancore`) targeting Minecraft 1.21.1 with NeoForge 21.1.228. The mod source lives at the repo root. Java 21 is required.
 
 ## Build & Deploy Workflow
 
@@ -12,7 +12,7 @@ After **any** code or resource/config change, always run `deployToInstance` imme
 
 ## Build Commands
 
-Run from the `mod/` directory (Git Bash):
+Run from the repo root (Git Bash):
 
 ```bash
 ./gradlew deployToInstance   # Always use this — builds and copies JAR to Prism instance
@@ -24,7 +24,7 @@ Run from the `mod/` directory (Git Bash):
 ./gradlew --refresh-dependencies
 ```
 
-> `deployToInstance` reads the mods path from `mod/local.properties` (`prism.instance.mods`). Gitignored, already configured.
+> `deployToInstance` reads the mods path from `local.properties` (`prism.instance.mods`). Gitignored, already configured.
 
 ## Key File Locations
 

@@ -36,8 +36,13 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
     public static final int INPUT_SLOTS = 9;
     public static final int OUTPUT_SLOT = 9;
     public static final int TOTAL_SLOTS = 10;
-    public static final int ENERGY_CAPACITY = 1_000_000;
-    public static final int ENERGY_MAX_RECEIVE = Integer.MAX_VALUE;
+    /** Buffer holds this many ticks of the active recipe's RF/t. Smooths sub-second jitter; too small to AFK-fill. */
+    public static final int BUFFER_TICKS = 40;
+    /** External networks may push at most this multiple of recipe RF/t per tick. Stops burst-charging from capacitor banks. */
+    public static final int INPUT_RATE_MULTIPLIER = 2;
+    /** Buffer when no recipe is active — large enough to be visible in the GUI, too small to matter. */
+    public static final int IDLE_CAPACITY = 1000;
+    public static final int IDLE_MAX_RECEIVE = 1000;
     public static final int FLUID_CAPACITY = 100_000;
     public static final int CONTAINER_DATA_COUNT = 6;
 
@@ -56,9 +61,9 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
     public int craftingProgress = 0;
     public int maxCraftingProgress = 0;
 
-    public final InternalEnergyStorage energyStorage = new InternalEnergyStorage(ENERGY_CAPACITY, ENERGY_MAX_RECEIVE);
+    public final InternalEnergyStorage energyStorage = new InternalEnergyStorage(IDLE_CAPACITY, IDLE_MAX_RECEIVE);
 
-    /** EnergyStorage that blocks external extraction but lets the machine drain its own buffer. */
+    /** EnergyStorage that blocks external extraction, lets the machine drain its own buffer, and supports per-recipe resizing. */
     public static class InternalEnergyStorage extends EnergyStorage {
         public InternalEnergyStorage(int capacity, int maxReceive) {
             super(capacity, maxReceive, 0);
@@ -68,6 +73,12 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
             if (energy < amount) return false;
             energy -= amount;
             return true;
+        }
+
+        public void configure(int newCapacity, int newMaxReceive) {
+            this.capacity = newCapacity;
+            this.maxReceive = newMaxReceive;
+            if (this.energy > this.capacity) this.energy = this.capacity;
         }
     }
 
@@ -158,12 +169,15 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
                 .findFirst();
 
         if (match.isEmpty()) {
+            be.energyStorage.configure(IDLE_CAPACITY, IDLE_MAX_RECEIVE);
             be.resetProgress();
             syncCraftingState(level, pos, state, false);
             return;
         }
 
         TitanCoreRecipe recipe = match.get().value();
+        int rfPerTick = recipe.energyPerTick();
+        be.energyStorage.configure(rfPerTick * BUFFER_TICKS, rfPerTick * INPUT_RATE_MULTIPLIER);
 
         // Check output slot has space
         ItemStack outputSlot = be.itemHandler.getStackInSlot(OUTPUT_SLOT);
@@ -176,17 +190,22 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
             return;
         }
 
-        // Drain energy — insufficient power resets progress
-        if (!be.energyStorage.consume(recipe.energyPerTick())) {
-            be.resetProgress();
+        be.maxCraftingProgress = recipe.craftingTime();
+
+        // Drain energy: success advances progress, failure decays it at the same rate.
+        // Net-zero when underpowered means players can never finish without sustaining >= recipe RF/t on average.
+        if (be.energyStorage.consume(rfPerTick)) {
+            be.craftingProgress++;
+            be.setChanged();
+            syncCraftingState(level, pos, state, true);
+        } else {
+            if (be.craftingProgress > 0) {
+                be.craftingProgress--;
+                be.setChanged();
+            }
             syncCraftingState(level, pos, state, false);
             return;
         }
-
-        be.maxCraftingProgress = recipe.craftingTime();
-        be.craftingProgress++;
-        be.setChanged();
-        syncCraftingState(level, pos, state, true);
 
         if (be.craftingProgress >= be.maxCraftingProgress) {
             // Consume inputs

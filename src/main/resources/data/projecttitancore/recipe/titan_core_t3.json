@@ -13,6 +13,6 @@
   ],
   "fluid": {"tag": "c:molten_steel", "amount": 50000},
   "energy_per_tick": 50000,
-  "crafting_time": 800,
+  "crafting_time": 1200,
   "result": {"id": "projecttitancore:trophy_tier_3", "count": 1}
 }

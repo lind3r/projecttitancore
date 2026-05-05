@@ -13,6 +13,6 @@
   ],
   "fluid": {"fluid": "minecraft:water", "amount": 10000},
   "energy_per_tick": 500,
-  "crafting_time": 200,
+  "crafting_time": 1200,
   "result": {"id": "projecttitancore:trophy_tier_1", "count": 1}
 }
