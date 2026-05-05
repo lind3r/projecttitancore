@@ -59,6 +59,8 @@ public class ProjectTitanCore {
     public static final DeferredItem<BlockItem> TITAN_CORE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("titan_core", TITAN_CORE_BLOCK);
 
     public static final DeferredItem<TrophyItem> TROPHY_TIER_1 = ITEMS.registerItem("trophy_tier_1", TrophyItem::new);
+    public static final DeferredItem<TrophyItem> TROPHY_TIER_2 = ITEMS.registerItem("trophy_tier_2", TrophyItem::new);
+    public static final DeferredItem<TrophyItem> TROPHY_TIER_3 = ITEMS.registerItem("trophy_tier_3", TrophyItem::new);
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TitanCoreBlockEntity>> TITAN_CORE_BLOCK_ENTITY =
             BLOCK_ENTITY_TYPES.register("titan_core", () -> BlockEntityType.Builder.of(TitanCoreBlockEntity::new, TITAN_CORE_BLOCK.get()).build(null));
@@ -74,6 +76,8 @@ public class ProjectTitanCore {
                     .displayItems((params, output) -> {
                         output.accept(TITAN_CORE_BLOCK_ITEM.get());
                         output.accept(TROPHY_TIER_1.get());
+                        output.accept(TROPHY_TIER_2.get());
+                        output.accept(TROPHY_TIER_3.get());
                     })
                     .build());
 

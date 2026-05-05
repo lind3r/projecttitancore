@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "side": "projecttitancore:block/titan_core_active",
+    "end":  "projecttitancore:block/titan_core_top_active"
+  }
+}

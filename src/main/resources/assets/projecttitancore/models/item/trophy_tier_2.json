@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "projecttitancore:item/trophy_tier_2"
+  }
+}

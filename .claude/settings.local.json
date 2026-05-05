@@ -3,7 +3,10 @@
     "allow": [
       "PowerShell(.\\gradlew deployToInstance)",
       "PowerShell(.\\\\gradlew deployToInstance 2>&1)",
-      "Bash(./gradlew deployToInstance *)"
+      "Bash(./gradlew deployToInstance *)",
+      "PowerShell(./gradlew deployToInstance)",
+      "Bash(python scripts/gen_trophy_texture.py)",
+      "Bash(python scripts/gen_block_texture.py)"
     ]
   }
 }

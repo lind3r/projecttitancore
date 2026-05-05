@@ -1,6 +1,7 @@
 package com.seb.projecttitancore.blockentity;
 
 import com.seb.projecttitancore.ProjectTitanCore;
+import com.seb.projecttitancore.block.TitanCoreBlock;
 import com.seb.projecttitancore.menu.TitanCoreMenu;
 import com.seb.projecttitancore.recipe.TitanCoreRecipe;
 import com.seb.projecttitancore.recipe.TitanCoreRecipeInput;
@@ -20,6 +21,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.EnergyStorage;
@@ -34,8 +36,8 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
     public static final int INPUT_SLOTS = 9;
     public static final int OUTPUT_SLOT = 9;
     public static final int TOTAL_SLOTS = 10;
-    public static final int ENERGY_CAPACITY = 100_000;
-    public static final int ENERGY_MAX_RECEIVE = 1_000;
+    public static final int ENERGY_CAPACITY = 1_000_000;
+    public static final int ENERGY_MAX_RECEIVE = Integer.MAX_VALUE;
     public static final int FLUID_CAPACITY = 100_000;
     public static final int CONTAINER_DATA_COUNT = 6;
 
@@ -157,6 +159,7 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
 
         if (match.isEmpty()) {
             be.resetProgress();
+            syncCraftingState(level, pos, state, false);
             return;
         }
 
@@ -169,25 +172,28 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
                 !(ItemStack.isSameItem(outputSlot, recipeOutput) &&
                   outputSlot.getCount() + recipeOutput.getCount() <= outputSlot.getMaxStackSize())) {
             be.resetProgress();
+            syncCraftingState(level, pos, state, false);
             return;
         }
 
         // Drain energy — insufficient power resets progress
         if (!be.energyStorage.consume(recipe.energyPerTick())) {
             be.resetProgress();
+            syncCraftingState(level, pos, state, false);
             return;
         }
 
         be.maxCraftingProgress = recipe.craftingTime();
         be.craftingProgress++;
         be.setChanged();
+        syncCraftingState(level, pos, state, true);
 
         if (be.craftingProgress >= be.maxCraftingProgress) {
             // Consume inputs
             for (int i = 0; i < INPUT_SLOTS; i++) {
                 be.itemHandler.extractItem(i, recipe.inputs().get(i).count(), false);
             }
-            be.fluidTank.drain(recipe.fluidIngredient(), IFluidHandler.FluidAction.EXECUTE);
+            be.fluidTank.drain(recipe.fluidIngredient().amount(), IFluidHandler.FluidAction.EXECUTE);
 
             // Place output
             if (outputSlot.isEmpty()) {
@@ -199,6 +205,13 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
             be.craftingProgress = 0;
             be.maxCraftingProgress = 0;
             be.setChanged();
+            syncCraftingState(level, pos, state, false);
+        }
+    }
+
+    private static void syncCraftingState(Level level, BlockPos pos, BlockState state, boolean crafting) {
+        if (state.getValue(TitanCoreBlock.CRAFTING) != crafting) {
+            level.setBlock(pos, state.setValue(TitanCoreBlock.CRAFTING, crafting), Block.UPDATE_CLIENTS);
         }
     }
 

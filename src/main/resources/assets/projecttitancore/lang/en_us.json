@@ -1,5 +1,7 @@
 {
   "block.projecttitancore.titan_core": "Titan Core",
   "itemGroup.projecttitancore": "Project Titan Core",
-  "item.projecttitancore.trophy_tier_1": "Trophy - Tier 1"
+  "item.projecttitancore.trophy_tier_1": "Trophy - Tier 1",
+  "item.projecttitancore.trophy_tier_2": "Trophy - Tier 2",
+  "item.projecttitancore.trophy_tier_3": "Trophy - Tier 3"
 }
