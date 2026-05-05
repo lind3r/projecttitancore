@@ -33,6 +33,31 @@ Run from the repo root (Git Bash):
 - Loot tables: `src/main/resources/data/projecttitancore/loot_table/blocks/` — **singular** `loot_table`, not `loot_tables` (1.21 rename)
 - Data generator output: `src/generated/resources/` (auto-included in JAR)
 
+## Visual Theme
+
+Project Titan Core uses a **holy** palette — ivory marble base with gold accents and a divine glow at the centre. Reuse these colours in any new texture or GUI; do not introduce new hues unless the user asks for it.
+
+| Role | Hex | RGB |
+|---|---|---|
+| Ivory marble (bg) | `#ECE4D0` | 236, 228, 208 |
+| Ivory shaded (veining / GUI slot well variant) | `#D0C6AE` | 208, 198, 174 |
+| Frame — outer dark gold rim | `#463612` | 70, 54, 18 |
+| Border — gold trim, dividers, slot/gauge borders | `#8A6620` | 138, 102, 32 |
+| Gold (cross body / main accent) | `#DCAC2A` | 220, 172, 42 |
+| Gold highlight (energy fill, arrow fill, lit cross) | `#FFE054` | 255, 224, 84 |
+| Gold shadow | `#946E12` | 148, 110, 18 |
+| Halo (inactive) | `#FFF8D7` | 255, 248, 215 |
+| Halo bright (inactive) | `#FFFFF5` | 255, 255, 245 |
+| Halo (active, warmer) | `#FFFCAF` | 255, 252, 175 |
+| Halo bright (active) | `#FFFFEB` | 255, 255, 235 |
+| Sunburst ray | `#F5E0A2` | 245, 224, 162 |
+| Holy blue (fluid gauge) | `#8AB6D8` | 138, 182, 216 |
+| Slot well (dark warm) | `#2A1F08` | 42, 31, 8 |
+
+**Where it's used:**
+- Block textures — `scripts/gen_block_texture.py` (ivory base, Greek cross, halo disc, sunburst on top/bottom).
+- GUI — `screen/TitanCoreScreen.java` (`COLOR_*` constants).
+
 ## Texture Generation
 
 **Trophy items** — `scripts/gen_trophy_texture.py`. To add a tier: add a palette to `TIERS` and a grid to `PIXEL_GRIDS`, then run. Writes to `textures/item/`.

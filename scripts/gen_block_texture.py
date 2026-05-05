@@ -1,10 +1,11 @@
 """
-Generate block textures for Project Titan Core.
+Generate block textures for Project Titan Core - holy theme.
 Outputs 32x32 PNGs for inactive and active states.
 Run: python scripts/gen_block_texture.py
 
-Side texture: horizontal gold rings on warm stone.
-Top/bottom texture: concentric gold squares matching the ring heights.
+Side: ivory marble base, gold Greek cross, glowing halo at the intersection,
+gold trim bands top/bottom, dark gold rim.
+Top/bottom: ivory marble, centred Greek cross with halo, diagonal sunburst rays.
 Model: cube_column (side + end textures).
 """
 
@@ -37,80 +38,144 @@ def blend(c1: tuple, c2: tuple, t: float) -> tuple:
 
 
 SIZE = 32
+CX = 15.5
+CY = 15.5
 
-# --- Palette ---
-STONE   = (148, 132, 108, 255)
-EDGE    = ( 88,  78,  62, 255)
-RIM     = ( 50,  43,  33, 255)
-GOLD    = (218, 170,  38, 255)
-GOLDHI  = (255, 222,  72, 255)
-GOLDSH  = (145, 110,  16, 255)
-CREAM   = (255, 248, 210, 255)
-WHITE   = (255, 255, 248, 255)
-CREAM_A = (255, 240, 155, 255)
-WHITE_A = (255, 255, 205, 255)
-WARM_ST = (162, 145, 118, 255)
+# --- Holy palette ---
+IVORY     = (236, 228, 208, 255)
+IVORY_SH  = (208, 198, 174, 255)
+RIM       = ( 70,  54,  18, 255)
+EDGE      = (138, 102,  32, 255)
+GOLD      = (220, 172,  42, 255)
+GOLDHI    = (255, 224,  84, 255)
+GOLDSH    = (148, 110,  18, 255)
+HALO      = (255, 248, 215, 255)
+HALO_HI   = (255, 255, 245, 255)
+HALO_A    = (255, 252, 175, 255)
+HALO_HIA  = (255, 255, 235, 255)
+RAY       = (245, 224, 162, 255)
+RAY_A     = (255, 240, 180, 255)
 
 
-def glow_intensity(x: int) -> float:
-    dist = abs(x - 15.5)
-    if dist <= 3.0: return 1.0
-    if dist <= 7.0: return (7.0 - dist) / 4.0
-    return 0.0
+def dist_center(x: int, y: int) -> float:
+    dx = x - CX
+    dy = y - CY
+    return (dx * dx + dy * dy) ** 0.5
+
+
+def in_vertical_arm(x: int, y: int) -> bool:
+    return 14 <= x <= 17 and 4 <= y <= 27
+
+
+def in_horizontal_arm(x: int, y: int) -> bool:
+    return 14 <= y <= 17 and 4 <= x <= 27
+
+
+def cross_body(active: bool) -> tuple:
+    return blend(GOLD, GOLDHI, 0.35) if active else GOLD
+
+
+def cross_color(x: int, y: int, active: bool) -> tuple:
+    in_v = in_vertical_arm(x, y)
+    in_h = in_horizontal_arm(x, y)
+    body = cross_body(active)
+
+    if in_v and in_h:
+        return GOLDHI
+
+    if in_v:
+        if y == 4:     return GOLDHI
+        if y == 27:    return GOLDSH
+        if x == 14:    return GOLDHI
+        if x == 17:    return GOLDSH
+        return body
+
+    # in_h
+    if x == 4:         return GOLDHI
+    if x == 27:        return GOLDSH
+    if y == 14:        return GOLDHI
+    if y == 17:        return GOLDSH
+    return body
+
+
+def halo_disc(x: int, y: int, active: bool):
+    """Returns halo color if pixel is inside the central halo disc, else None."""
+    d = dist_center(x, y)
+    halo_inner = 2.5 if active else 2.0
+    halo_mid   = 5.5 if active else 4.5
+    if d < halo_inner:
+        return HALO_HIA if active else HALO_HI
+    if d < halo_mid:
+        return HALO_A if active else HALO
+    return None
+
+
+def marble(x: int, y: int) -> tuple:
+    # Sparse pseudo-random veining for subtle texture
+    if (x * 3 + y * 5) % 17 == 0 and (x + y * 2) % 13 == 0: return IVORY_SH
+    if (x * 7 + y * 3) % 23 == 1 and (x + y) % 5 == 0:     return IVORY_SH
+    return IVORY
 
 
 def side_pixel(x: int, y: int, active: bool = False) -> tuple:
-    if x == 0 or x == 31 or y == 0 or y == 31: return RIM
-    if x == 1 or x == 30 or y == 1 or y == 30: return EDGE
+    if x == 0 or x == SIZE - 1 or y == 0 or y == SIZE - 1: return RIM
+    if x == 1 or x == SIZE - 2 or y == 1 or y == SIZE - 2: return EDGE
 
-    if y == 6:          return GOLDHI
-    if y in (7, 8):     return GOLD
-    if y == 9:          return GOLDSH
+    # Trim bands top and bottom
+    if y == 2 or y == SIZE - 3:    return GOLD
+    if y == 3:                     return GOLDSH
+    if y == SIZE - 4:              return GOLDHI
 
-    if y == 14:         return GOLDHI
-    if y in (15, 16):
-        gi = glow_intensity(x)
-        if gi == 0.0:   return GOLD
-        c_cream = CREAM_A if active else CREAM
-        c_white = WHITE_A if active else WHITE
-        if gi <= 0.5:   return blend(GOLD, c_cream, gi * 2.0)
-        else:           return blend(c_cream, c_white, (gi - 0.5) * 2.0)
-    if y == 17:         return GOLDSH
+    # Halo disc — overrides cross arms and ivory inside the disc radius
+    halo = halo_disc(x, y, active)
+    if halo is not None:
+        return halo
 
-    if y == 22:         return GOLDHI
-    if y in (23, 24):   return GOLD
-    if y == 25:         return GOLDSH
+    if in_vertical_arm(x, y) or in_horizontal_arm(x, y):
+        return cross_color(x, y, active)
 
-    if active and y in (12, 13, 18, 19):
-        return blend(STONE, WARM_ST, 0.22)
+    # Outer bloom on ivory
+    d = dist_center(x, y)
+    halo_mid = 5.5 if active else 4.5
+    bloom_r = 13.0 if active else 10.0
+    if d < bloom_r:
+        target = HALO_A if active else HALO
+        t = (bloom_r - d) / max(0.001, bloom_r - halo_mid) * 0.55
+        return blend(marble(x, y), target, t)
 
-    return STONE
+    return marble(x, y)
 
 
 def top_pixel(x: int, y: int, active: bool = False) -> tuple:
-    """
-    Concentric gold squares. dist = distance from nearest edge.
-    Matches the ring heights of the side texture:
-      Ring 1/3 (rows 6-9 / 22-25 from edges)  ->  dist 6-9
-      Ring 2   (rows 14-17, centre)            ->  dist 13-15
-    """
-    dist = min(x, y, SIZE - 1 - x, SIZE - 1 - y)
+    if x == 0 or x == SIZE - 1 or y == 0 or y == SIZE - 1: return RIM
+    if x == 1 or x == SIZE - 2 or y == 1 or y == SIZE - 2: return EDGE
 
-    if dist == 0: return RIM
-    if dist == 1: return EDGE
+    halo = halo_disc(x, y, active)
+    if halo is not None:
+        return halo
 
-    if dist == 6:           return GOLDHI
-    if dist in (7, 8):      return GOLD
-    if dist == 9:           return GOLDSH
+    if in_vertical_arm(x, y) or in_horizontal_arm(x, y):
+        return cross_color(x, y, active)
 
-    if dist == 13:          return GOLDHI
-    if dist == 14:          return blend(GOLD, CREAM_A if active else CREAM, 0.6)
-    if dist == 15:          return WHITE_A if active else WHITE
+    dx = x - CX
+    dy = y - CY
+    d = (dx * dx + dy * dy) ** 0.5
+    halo_mid = 5.5 if active else 4.5
 
-    if active and dist in (10, 11, 12):
-        return blend(STONE, WARM_ST, 0.18)
+    # Diagonal sunburst rays between halo edge and frame
+    if halo_mid < d < 14.0 and abs(abs(dx) - abs(dy)) < 1.2:
+        target = RAY_A if active else RAY
+        t = 0.65 if active else 0.5
+        return blend(marble(x, y), target, t)
 
-    return STONE
+    # Outer halo bloom
+    bloom_r = 13.0 if active else 10.0
+    if d < bloom_r:
+        target = HALO_A if active else HALO
+        t = (bloom_r - d) / max(0.001, bloom_r - halo_mid) * 0.55
+        return blend(marble(x, y), target, t)
+
+    return marble(x, y)
 
 
 def generate_side(active: bool = False) -> list:

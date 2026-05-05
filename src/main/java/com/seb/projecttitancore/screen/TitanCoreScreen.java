@@ -10,17 +10,18 @@ public class TitanCoreScreen extends AbstractContainerScreen<TitanCoreMenu> {
     private static final int GUI_WIDTH  = 176;
     private static final int GUI_HEIGHT = 166;
 
-    // Fluid gauge: between input grid (ends x=60) and output slot (x=116)
+    // Fluid gauge: between input grid (ends x=60) and output slot (x=116).
+    // HEIGHT 52 + 1px border on each side = 54px outer, exactly matching the 3x3 input grid.
     private static final int FLUID_BAR_X      = 68;
     private static final int FLUID_BAR_Y      = 17;
     private static final int FLUID_BAR_WIDTH  = 16;
-    private static final int FLUID_BAR_HEIGHT = 54;
+    private static final int FLUID_BAR_HEIGHT = 52;
 
-    // Energy bar: right of output slot (x=132) close to GUI right edge
+    // Energy bar: right of output slot (x=132) close to GUI right edge.
     private static final int ENERGY_BAR_X      = 152;
     private static final int ENERGY_BAR_Y      = 17;
     private static final int ENERGY_BAR_WIDTH  = 14;
-    private static final int ENERGY_BAR_HEIGHT = 54;
+    private static final int ENERGY_BAR_HEIGHT = 52;
 
     // Progress arrow: centred in the 30px gap between fluid gauge and output slot
     private static final int ARROW_X      = 89;
@@ -28,17 +29,19 @@ public class TitanCoreScreen extends AbstractContainerScreen<TitanCoreMenu> {
     private static final int ARROW_W      = 22;
     private static final int ARROW_H      = 16;
 
-    private static final int COLOR_BG          = 0xFF404040;
-    private static final int COLOR_BORDER      = 0xFF888888;
-    private static final int COLOR_SLOT_BG     = 0xFF2A2A2A;
-    private static final int COLOR_OUTPUT_BG   = 0xFF1A3300;
-    private static final int COLOR_ENERGY_FILL = 0xFFFF6600;
-    private static final int COLOR_ENERGY_BG   = 0xFF1A0A00;
-    private static final int COLOR_FLUID_FILL  = 0xFF3399FF;
-    private static final int COLOR_FLUID_BG    = 0xFF001A33;
-    private static final int COLOR_ARROW_BG    = 0xFF2A2A2A;
-    private static final int COLOR_ARROW_FILL  = 0xFFFFCC00;
-    private static final int COLOR_LABEL       = 0xFFCCCCCC;
+    // Holy palette — see CLAUDE.md "Visual Theme".
+    private static final int COLOR_BG          = 0xFFECE4D0; // ivory marble
+    private static final int COLOR_FRAME       = 0xFF463612; // dark gold rim — outer GUI frame
+    private static final int COLOR_BORDER      = 0xFF8A6620; // gold trim — inner dividers, slot/gauge borders
+    private static final int COLOR_SLOT_BG     = 0xFF2A1F08; // dark warm slot well
+    private static final int COLOR_OUTPUT_BG   = 0xFF4A3818; // warmer than slot bg, marks the sacred output
+    private static final int COLOR_ENERGY_FILL = 0xFFFFE054; // gold highlight
+    private static final int COLOR_ENERGY_BG   = 0xFF1F1608;
+    private static final int COLOR_FLUID_FILL  = 0xFF8AB6D8; // soft holy blue
+    private static final int COLOR_FLUID_BG    = 0xFF1F2A38;
+    private static final int COLOR_ARROW_BG    = 0xFF1F1608;
+    private static final int COLOR_ARROW_FILL  = 0xFFFFE054;
+    private static final int COLOR_LABEL       = 0xFF463612; // dark gold text on ivory bg
 
     public TitanCoreScreen(TitanCoreMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -155,7 +158,7 @@ public class TitanCoreScreen extends AbstractContainerScreen<TitanCoreMenu> {
     }
 
     private static void drawSlot(GuiGraphics g, int x, int y, int fillColor) {
-        g.fill(x - 1, y - 1, x + 17, y + 17, 0xFF888888);
+        g.fill(x - 1, y - 1, x + 17, y + 17, COLOR_BORDER);
         g.fill(x, y, x + 16, y + 16, fillColor);
     }
 
@@ -170,9 +173,9 @@ public class TitanCoreScreen extends AbstractContainerScreen<TitanCoreMenu> {
     }
 
     private static void drawBorder(GuiGraphics g, int x, int y, int w, int h) {
-        g.fill(x, y, x + w, y + 1, COLOR_BORDER);
-        g.fill(x, y + h - 1, x + w, y + h, COLOR_BORDER);
-        g.fill(x, y, x + 1, y + h, COLOR_BORDER);
-        g.fill(x + w - 1, y, x + w, y + h, COLOR_BORDER);
+        g.fill(x, y, x + w, y + 1, COLOR_FRAME);
+        g.fill(x, y + h - 1, x + w, y + h, COLOR_FRAME);
+        g.fill(x, y, x + 1, y + h, COLOR_FRAME);
+        g.fill(x + w - 1, y, x + w, y + h, COLOR_FRAME);
     }
 }
