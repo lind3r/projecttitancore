@@ -1,0 +1,18 @@
+{
+  "type": "projecttitancore:titan_core",
+  "inputs": [
+    {"item": "minecraft:dirt", "count": 64},
+    {"item": "minecraft:dirt", "count": 64},
+    {"item": "minecraft:dirt", "count": 64},
+    {"item": "minecraft:dirt", "count": 64},
+    {"item": "minecraft:dirt", "count": 64},
+    {"item": "minecraft:dirt", "count": 64},
+    {"item": "minecraft:dirt", "count": 64},
+    {"item": "minecraft:dirt", "count": 64},
+    {"item": "minecraft:dirt", "count": 64}
+  ],
+  "fluid": {"id": "minecraft:water", "amount": 10000},
+  "energy_per_tick": 500,
+  "crafting_time": 200,
+  "result": {"id": "projecttitancore:trophy_tier_1", "count": 1}
+}

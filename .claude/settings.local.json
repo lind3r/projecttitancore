@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(.\\gradlew deployToInstance)",
+      "PowerShell(.\\\\gradlew deployToInstance 2>&1)",
+      "Bash(./gradlew deployToInstance *)"
+    ]
+  }
+}
