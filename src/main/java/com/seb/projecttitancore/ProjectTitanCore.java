@@ -54,7 +54,8 @@ public class ProjectTitanCore {
             () -> new TitanCoreBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .strength(3.5f)
-                    .sound(SoundType.METAL)));
+                    .sound(SoundType.METAL)
+                    .lightLevel(state -> state.getValue(TitanCoreBlock.CRAFTING) ? 15 : 0)));
 
     public static final DeferredItem<BlockItem> TITAN_CORE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("titan_core", TITAN_CORE_BLOCK);
 
