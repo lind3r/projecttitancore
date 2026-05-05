@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -45,6 +46,7 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
     public static final int IDLE_MAX_RECEIVE = 1000;
     public static final int FLUID_CAPACITY = 100_000;
     public static final int CONTAINER_DATA_COUNT = 6;
+    public static final int BEAM_RENDER_HEIGHT = 30;
 
     public final ItemStackHandler itemHandler = new ItemStackHandler(TOTAL_SLOTS) {
         @Override
@@ -143,6 +145,14 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
             energyStorage.deserializeNBT(registries, (IntTag) tag.get("Energy"));
         }
         fluidTank.readFromNBT(registries, tag.getCompound("Fluid"));
+    }
+
+    public AABB getRenderBoundingBox() {
+        BlockPos pos = getBlockPos();
+        return new AABB(
+                pos.getX(), pos.getY(), pos.getZ(),
+                pos.getX() + 1, pos.getY() + BEAM_RENDER_HEIGHT + 1, pos.getZ() + 1
+        );
     }
 
     @Override

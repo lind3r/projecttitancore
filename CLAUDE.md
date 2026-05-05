@@ -81,11 +81,6 @@ Search for `FATAL` or `ERROR` — the **first** one is always the root cause. Ev
 5. ⬜ Better Questing integration (trophy in inventory → quest completion event)
 6. ⬜ Structure building in world (design TBD)
 
-### Deferred Integrations (do not implement yet)
+### Known Issues
 
-| Integration | Notes |
-|---|---|
-| JEI recipe display | `@JeiPlugin` in `compat/jei/`; JEI dep already commented out in `build.gradle` |
-| Pipe item access | Expose a capability wrapper that restricts extraction from input slots |
-
-All compat code goes in `com.seb.projecttitancore.compat.<modid>`. Core machine logic must never import from `compat/`.
+- **Crafting beam culls when block is offscreen.** Despite `shouldRenderOffScreen=true` on the BER and a 30-block-tall `getRenderBoundingBox()` on the BE, the beam disappears when the core itself is outside the camera frustum (you can only see the beam if the core block is on-screen). Vanilla beacon's beam stays visible from far away when looking up — investigate why ours doesn't. Possibly a chunk-section visibility check or a missing override.
