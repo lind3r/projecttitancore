@@ -40,6 +40,7 @@ notes/
 
 ### Texture-generator previews (dev artefacts) ###
 scripts/preview_titan_core/
+scripts/preview_titan/
 
 ### Minecraft Modding ###
 run/

@@ -46,7 +46,7 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
     public static final int IDLE_MAX_RECEIVE = 1000;
     public static final int FLUID_CAPACITY = 100_000;
     public static final int CONTAINER_DATA_COUNT = 6;
-    public static final int BEAM_RENDER_HEIGHT = 30;
+    public static final int BEAM_RENDER_HEIGHT = 15;
 
     public final ItemStackHandler itemHandler = new ItemStackHandler(TOTAL_SLOTS) {
         @Override
@@ -62,6 +62,9 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
 
     public int craftingProgress = 0;
     public int maxCraftingProgress = 0;
+
+    /** Highest tier ever crafted at this core. Drives the cumulative Titan projection. */
+    public int titanTier = 0;
 
     public final InternalEnergyStorage energyStorage = new InternalEnergyStorage(IDLE_CAPACITY, IDLE_MAX_RECEIVE);
 
@@ -135,6 +138,7 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
         tag.put("Inventory", itemHandler.serializeNBT(registries));
         tag.put("Energy", energyStorage.serializeNBT(registries));
         tag.put("Fluid", fluidTank.writeToNBT(registries, new CompoundTag()));
+        tag.putInt("TitanTier", titanTier);
     }
 
     @Override
@@ -145,14 +149,16 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
             energyStorage.deserializeNBT(registries, (IntTag) tag.get("Energy"));
         }
         fluidTank.readFromNBT(registries, tag.getCompound("Fluid"));
+        titanTier = tag.getInt("TitanTier");
     }
 
     public AABB getRenderBoundingBox() {
+        // Covers the beam (30 blocks up) plus the rotating titan projection above it
+        // (~50 blocks tall, swept ~10 blocks horizontally during rotation).
         BlockPos pos = getBlockPos();
-        return new AABB(
-                pos.getX(), pos.getY(), pos.getZ(),
-                pos.getX() + 1, pos.getY() + BEAM_RENDER_HEIGHT + 1, pos.getZ() + 1
-        );
+        double cx = pos.getX() + 0.5;
+        double cz = pos.getZ() + 0.5;
+        return new AABB(cx - 10, pos.getY(), cz - 10, cx + 10, pos.getY() + 85, cz + 10);
     }
 
     @Override
@@ -229,6 +235,13 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
                 be.itemHandler.setStackInSlot(OUTPUT_SLOT, recipeOutput.copy());
             } else {
                 outputSlot.grow(recipeOutput.getCount());
+            }
+
+            // Bump the cumulative titan tier and push a BE data packet so the
+            // client renderer extends the projection immediately.
+            if (recipe.tier() > be.titanTier) {
+                be.titanTier = recipe.tier();
+                level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
             }
 
             be.craftingProgress = 0;

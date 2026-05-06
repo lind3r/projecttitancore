@@ -23,7 +23,8 @@ public record TitanCoreRecipe(
         SizedFluidIngredient fluidIngredient,
         int energyPerTick,
         int craftingTime,
-        ItemStack result
+        ItemStack result,
+        int tier
 ) implements Recipe<TitanCoreRecipeInput> {
 
     public static final int INPUT_COUNT = 9;
@@ -69,7 +70,8 @@ public record TitanCoreRecipe(
                         SizedFluidIngredient.FLAT_CODEC.fieldOf("fluid").forGetter(TitanCoreRecipe::fluidIngredient),
                         Codec.INT.fieldOf("energy_per_tick").forGetter(TitanCoreRecipe::energyPerTick),
                         Codec.INT.fieldOf("crafting_time").forGetter(TitanCoreRecipe::craftingTime),
-                        ItemStack.CODEC.fieldOf("result").forGetter(TitanCoreRecipe::result)
+                        ItemStack.CODEC.fieldOf("result").forGetter(TitanCoreRecipe::result),
+                        Codec.INT.optionalFieldOf("tier", 1).forGetter(TitanCoreRecipe::tier)
                 ).apply(instance, TitanCoreRecipe::new));
 
         private static final StreamCodec<RegistryFriendlyByteBuf, TitanCoreRecipe> STREAM_CODEC =
@@ -79,6 +81,7 @@ public record TitanCoreRecipe(
                         ByteBufCodecs.VAR_INT,                               TitanCoreRecipe::energyPerTick,
                         ByteBufCodecs.VAR_INT,                               TitanCoreRecipe::craftingTime,
                         ItemStack.STREAM_CODEC,                              TitanCoreRecipe::result,
+                        ByteBufCodecs.VAR_INT,                               TitanCoreRecipe::tier,
                         TitanCoreRecipe::new
                 );
 

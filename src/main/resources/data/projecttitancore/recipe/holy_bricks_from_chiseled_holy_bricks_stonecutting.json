@@ -1,5 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": {"item": "projecttitancore:chiseled_holy_bricks"},
-  "result": {"id": "projecttitancore:holy_bricks", "count": 1}
-}

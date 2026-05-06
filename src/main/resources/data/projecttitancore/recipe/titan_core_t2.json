@@ -14,5 +14,6 @@
   "fluid": {"fluid": "minecraft:lava", "amount": 100000},
   "energy_per_tick": 5000,
   "crafting_time": 1200,
-  "result": {"id": "projecttitancore:trophy_tier_2", "count": 1}
+  "result": {"id": "projecttitancore:trophy_tier_2", "count": 1},
+  "tier": 2
 }
