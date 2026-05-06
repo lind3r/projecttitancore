@@ -88,7 +88,7 @@ Search for `FATAL` or `ERROR` — the **first** one is always the root cause. Ev
 2. ✅ Full inventory (9+1 slots), EnergyStorage, FluidTank, capabilities, GUI with bars
 3. ✅ Custom RecipeType + Tier 1 recipe JSON + crafting tick logic
 4. ✅ Custom trophy item (`TrophyItem`, `trophy_tier_1`), texture via gen script
-5. ⬜ Better Questing integration (trophy in inventory → quest completion event)
+5. ⬜ FTB Quests integration (trophy in inventory → quest completion event)
 6. ⬜ Structure building in world (design TBD)
 
 ### Known Issues
@@ -99,6 +99,6 @@ Search for `FATAL` or `ERROR` — the **first** one is always the root cause. Ev
   - Vanilla 1.21.1 `LevelRenderer.renderBlockEntities` iterates `globalBlockEntities` every frame regardless of section visibility, and `BlockEntityRenderDispatcher.render` only does a distance check via `shouldRender` (no frustum). So `shouldRenderOffScreen=true` *should* be sufficient on paper.
   - Vanilla `BlockEntity` (decompiled mojmap 1.21.1) has **no** `getRenderBoundingBox` method — it's a Forge/NeoForge addition. The fix recommended on the [1.18 Forge forum thread](https://forums.minecraftforge.net/topic/108050-solved-1181-blockentityrenderer-only-renders-when-the-source-block-is-within-the-players-viewport/) (override on the BE) is what we already do at `TitanCoreBlockEntity.java:150`.
   - Strong lead from a delegated research pass: in NeoForge 1.21 the hook moved off the BE and onto the **renderer** — `BlockEntityRenderer#getRenderBoundingBox(T tile)`. Mekanism's `MultiblockTileEntityRenderer` overrides it on the renderer, not the BE. If true, our BE-side override is dead code and NeoForge's frustum check sees only the default 1×1×1 block AABB, which gets culled the instant the block leaves the frustum. **Not yet confirmed against NeoForge 1.21.1 patched sources** — verify by `javap`-ing `BlockEntityRenderer.class` from the NeoForge-compiled jar or reading the NeoForge patch file before changing anything.
-  - No optimization/culling mods are installed in the dev instance (just Mekanism, EnderIO, FTB, JEI, Generator Galore), so it's not Sodium/EntityCulling.
+  - No optimization/culling mods are installed in the dev instance (just Mekanism, EnderIO, FTB, EMI, Generator Galore), so it's not Sodium/EntityCulling.
 
   **Likely fix to try first:** move the override from `TitanCoreBlockEntity.getRenderBoundingBox()` to `TitanCoreRenderer.getRenderBoundingBox(TitanCoreBlockEntity be)`, returning the same 30-tall column. If that still culls at extreme angles, swap to `AABB.INFINITE` (what vanilla beacon effectively is, via mojmap). Delete the dead BE-side override either way.
