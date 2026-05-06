@@ -7,7 +7,7 @@ beam. Each tier crafted unlocks one cumulative section of the silhouette:
   Tier 1: plinth, feet, lower legs (knee down)
   Tier 2: upper legs, hips, gold belt
   Tier 3: torso (waist + chest), arms, pauldrons
-  Tier 4: head, helmet, gold crown, sword
+  Tier 4: head, sword (held forward)
 
 Run: python scripts/gen_titan_structure.py
 
@@ -173,7 +173,7 @@ def tier3_voxels():
 
 
 # --------------------------------------------------------------------------- #
-# TIER 4 - head, helmet, sword                                                #
+# TIER 4 - head, sword                                                        #
 # --------------------------------------------------------------------------- #
 
 def t4_neck_head():
@@ -187,39 +187,27 @@ def t4_neck_head():
     return voxels
 
 
-def t4_helmet():
-    voxels = []
-    voxels += cube((-3, 4), (42, 43), (-3, 4), "ivory")    # helmet brim (overhang)
-    voxels += cube((-2, 3), (43, 46), (-2, 3), "ivory")    # helmet dome
-    # gold crown ring around the dome's top edge (5x1x5 outer ring)
-    for x in range(-2, 3):
-        for z in range(-2, 3):
-            if x in (-2, 2) or z in (-2, 2):
-                voxels.append((x, 46, z, "gold"))
-    voxels.append((0, 47, 0, "gold"))                       # crown spike
-    return voxels
-
-
 def t4_sword():
-    """Held outboard of the right arm (+X side), blade pointing up.
+    """Held in the right hand at hip height, blade pointing forward (+Z).
 
-    Right arm sits at x=4..5 / y=22..23; hilt sits one block outboard at x=6,
-    face-adjacent to the arm. The arm's rightmost-front column at hand height
-    is recolored gold so a "fingers gripping the hilt" detail is visible.
+    Hilt sits one block outboard of the right arm (x=6) at hand height (y=22).
+    Pommel is tucked behind the hand; crossguard runs across X; blade extends
+    straight forward in +Z. The right arm's outermost column at hand height is
+    painted gold to read as fingers gripping the hilt.
     """
     voxels = []
-    voxels.append((6, 21, 0, "gold"))                       # pommel
-    voxels += [(6, 22, 0, "shadow"), (6, 23, 0, "shadow")]  # leather grip
-    voxels += [(x, 24, 0, "gold") for x in range(5, 8)]     # crossguard (3 wide)
-    voxels += cube((6, 8), (25, 41), (0, 1), "ivory")       # blade body
-    voxels.append((6, 41, 0, "ivory"))                      # blade tip
-    # fingers - paint the front-right column of the right arm at hand height
-    voxels += [(5, 22, 0, "gold"), (5, 23, 0, "gold")]
+    voxels.append((6, 22, -1, "gold"))                      # pommel (behind hand)
+    voxels.append((6, 22, 0, "shadow"))                     # leather grip
+    voxels += [(x, 22, 1, "gold") for x in range(5, 8)]     # crossguard (3 wide along X)
+    voxels += cube((6, 8), (22, 23), (2, 18), "ivory")      # blade body (2 wide, 16 long)
+    voxels.append((6, 22, 18, "ivory"))                     # blade tip
+    # finger - paint the rightmost arm column at hand height
+    voxels.append((5, 22, 0, "gold"))
     return voxels
 
 
 def tier4_voxels():
-    return t4_neck_head() + t4_helmet() + t4_sword()
+    return t4_neck_head() + t4_sword()
 
 
 # --------------------------------------------------------------------------- #

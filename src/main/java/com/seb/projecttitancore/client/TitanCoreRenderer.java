@@ -12,8 +12,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BeaconRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
 import org.joml.Matrix4f;
 
 import java.util.List;
@@ -181,5 +183,18 @@ public class TitanCoreRenderer implements BlockEntityRenderer<TitanCoreBlockEnti
     @Override
     public int getViewDistance() {
         return 256;
+    }
+
+    // Covers the 15-tall beam plus the ~50-tall titan projection above it,
+    // with horizontal slack for the projection's slow Y rotation. NeoForge 1.21
+    // calls this on the renderer (not the BE) for frustum culling — without it
+    // the dispatcher sees only the unit cube and culls beam + projection the
+    // moment the core leaves the camera frustum.
+    @Override
+    public AABB getRenderBoundingBox(TitanCoreBlockEntity be) {
+        BlockPos pos = be.getBlockPos();
+        double cx = pos.getX() + 0.5;
+        double cz = pos.getZ() + 0.5;
+        return new AABB(cx - 10, pos.getY(), cz - 10, cx + 10, pos.getY() + 85, cz + 10);
     }
 }

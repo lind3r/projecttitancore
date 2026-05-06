@@ -24,7 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -150,15 +149,6 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
         }
         fluidTank.readFromNBT(registries, tag.getCompound("Fluid"));
         titanTier = tag.getInt("TitanTier");
-    }
-
-    public AABB getRenderBoundingBox() {
-        // Covers the beam (30 blocks up) plus the rotating titan projection above it
-        // (~50 blocks tall, swept ~10 blocks horizontally during rotation).
-        BlockPos pos = getBlockPos();
-        double cx = pos.getX() + 0.5;
-        double cz = pos.getZ() + 0.5;
-        return new AABB(cx - 10, pos.getY(), cz - 10, cx + 10, pos.getY() + 85, cz + 10);
     }
 
     @Override
