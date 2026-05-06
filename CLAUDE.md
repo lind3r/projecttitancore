@@ -10,6 +10,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 After **any** code or resource/config change, always run `deployToInstance` immediately so the user can test right away. Do not wait to be asked.
 
+## Git Workflow
+
+You have standing authorization to `git commit` and `git push` (to `master`) when a coherent chunk of work is done. Granted by the user 2026-05-06 — "feel free to commit (including push) when you feel it makes sense going forward."
+
+Apply judgment:
+- Commit when the changes form a sensible unit (one feature, one fix, one batch of related edits) — not after every micro-edit.
+- Standard git safety still applies: never `--no-verify`, never force-push, never `git add -A` blindly (stage by name), never commit files that look like secrets, never commit `.claude/settings.local.json` or other clearly-local state unless explicitly asked.
+- Never delete branches, force-push, or rewrite published history without asking first.
+- If a pre-commit hook fails, fix the underlying issue and create a NEW commit — do not amend or `--no-verify`.
+
 ## Build Commands
 
 Run from the repo root (Git Bash):

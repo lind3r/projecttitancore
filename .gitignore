@@ -35,6 +35,9 @@ bin/
 ### Local machine config ###
 local.properties
 
+### Personal planning / notes ###
+notes/
+
 ### Minecraft Modding ###
 run/
 !**/src/**/run/
