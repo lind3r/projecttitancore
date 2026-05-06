@@ -12,7 +12,7 @@
     {"item": "minecraft:copper_block", "count": 64}
   ],
   "fluid": {"fluid": "minecraft:lava", "amount": 10000},
-  "energy_per_tick": 2000,
+  "energy_per_tick": 60000,
   "crafting_time": 1000,
   "result": {"id": "projecttitancore:pulse_of_the_titan", "count": 1},
   "tier": 4

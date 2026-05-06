@@ -36,8 +36,10 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
     public static final int INPUT_SLOTS = 9;
     public static final int OUTPUT_SLOT = 9;
     public static final int TOTAL_SLOTS = 10;
-    /** Buffer holds this many ticks of the active recipe's RF/t. Smooths sub-second jitter; too small to AFK-fill. */
-    public static final int BUFFER_TICKS = 40;
+    /** Buffer holds this many ticks of the active recipe's RF/t. Smooths sub-second jitter; too small to AFK-fill.
+     *  Must keep {@code rfPerTick * BUFFER_TICKS} under {@link Integer#MAX_VALUE} (~2.147B) since EnergyStorage is int-based.
+     *  At 8 ticks we can safely run recipes up to ~268M RF/t (current ceiling: T10 at 200M). */
+    public static final int BUFFER_TICKS = 8;
     /** External networks may push at most this multiple of recipe RF/t per tick. Stops burst-charging from capacitor banks. */
     public static final int INPUT_RATE_MULTIPLIER = 2;
     /** Buffer when no recipe is active — large enough to be visible in the GUI, too small to matter. */

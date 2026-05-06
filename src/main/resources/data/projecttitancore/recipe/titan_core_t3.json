@@ -12,7 +12,7 @@
     {"item": "minecraft:iron_block", "count": 64}
   ],
   "fluid": {"fluid": "minecraft:lava", "amount": 5000},
-  "energy_per_tick": 1000,
+  "energy_per_tick": 16000,
   "crafting_time": 800,
   "result": {"id": "projecttitancore:spark_of_the_titan", "count": 1},
   "tier": 3
