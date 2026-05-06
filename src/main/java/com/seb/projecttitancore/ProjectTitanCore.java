@@ -60,14 +60,29 @@ public class ProjectTitanCore {
 
     public static final DeferredItem<BlockItem> TITAN_CORE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("titan_core", TITAN_CORE_BLOCK);
 
-    public static final DeferredBlock<Block> HOLY_BRICKS = BLOCKS.register("holy_bricks",
-            () -> new Block(BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.SAND)
-                    .strength(2.0f, 6.0f)
-                    .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops()));
+    private static BlockBehaviour.Properties holyBrickProps() {
+        return BlockBehaviour.Properties.of()
+                .mapColor(MapColor.SAND)
+                .strength(2.0f, 6.0f)
+                .sound(SoundType.STONE)
+                .requiresCorrectToolForDrops();
+    }
 
+    public static final DeferredBlock<Block> HOLY_BRICKS = BLOCKS.register("holy_bricks",
+            () -> new Block(holyBrickProps()));
     public static final DeferredItem<BlockItem> HOLY_BRICKS_ITEM = ITEMS.registerSimpleBlockItem("holy_bricks", HOLY_BRICKS);
+
+    public static final DeferredBlock<Block> CHISELED_HOLY_BRICKS = BLOCKS.register("chiseled_holy_bricks",
+            () -> new Block(holyBrickProps()));
+    public static final DeferredItem<BlockItem> CHISELED_HOLY_BRICKS_ITEM = ITEMS.registerSimpleBlockItem("chiseled_holy_bricks", CHISELED_HOLY_BRICKS);
+
+    public static final DeferredBlock<Block> HOLY_BRICK_PILLAR = BLOCKS.register("holy_brick_pillar",
+            () -> new Block(holyBrickProps()));
+    public static final DeferredItem<BlockItem> HOLY_BRICK_PILLAR_ITEM = ITEMS.registerSimpleBlockItem("holy_brick_pillar", HOLY_BRICK_PILLAR);
+
+    public static final DeferredBlock<Block> HOLY_BRICK_TILES = BLOCKS.register("holy_brick_tiles",
+            () -> new Block(holyBrickProps()));
+    public static final DeferredItem<BlockItem> HOLY_BRICK_TILES_ITEM = ITEMS.registerSimpleBlockItem("holy_brick_tiles", HOLY_BRICK_TILES);
 
     public static final DeferredItem<TrophyItem> TROPHY_TIER_1 = ITEMS.registerItem("trophy_tier_1", TrophyItem::new);
     public static final DeferredItem<TrophyItem> TROPHY_TIER_2 = ITEMS.registerItem("trophy_tier_2", TrophyItem::new);
@@ -87,6 +102,9 @@ public class ProjectTitanCore {
                     .displayItems((params, output) -> {
                         output.accept(TITAN_CORE_BLOCK_ITEM.get());
                         output.accept(HOLY_BRICKS_ITEM.get());
+                        output.accept(CHISELED_HOLY_BRICKS_ITEM.get());
+                        output.accept(HOLY_BRICK_PILLAR_ITEM.get());
+                        output.accept(HOLY_BRICK_TILES_ITEM.get());
                         output.accept(TROPHY_TIER_1.get());
                         output.accept(TROPHY_TIER_2.get());
                         output.accept(TROPHY_TIER_3.get());

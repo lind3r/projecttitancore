@@ -1,7 +1,6 @@
 {
-  "parent": "minecraft:block/cube_column",
+  "parent": "minecraft:block/cube_all",
   "textures": {
-    "side": "projecttitancore:block/titan_core",
-    "end":  "projecttitancore:block/titan_core_top"
+    "all": "projecttitancore:block/titan_core"
   }
 }

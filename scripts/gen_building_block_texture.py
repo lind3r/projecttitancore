@@ -97,10 +97,81 @@ def render_holy_bricks(x: int, y: int) -> tuple:
 
 
 # ---------------------------------------------------------------------------
+# Variant: chiseled_holy_bricks
+# Single decorative panel: 1px gold outer frame + 1px ivory-highlight inner
+# ring + centred Greek cross (4px arms, 16px long) in gold with a 2x2 bright
+# centre. Tileable — adjacent panels' outer frames merge into a 2px seam.
+# ---------------------------------------------------------------------------
+def _on_cross(x: int, y: int) -> bool:
+    in_vert = 14 <= x <= 17 and 8 <= y <= 23
+    in_horz = 8 <= x <= 23 and 14 <= y <= 17
+    return in_vert or in_horz
+
+
+def render_chiseled_holy_bricks(x: int, y: int) -> tuple:
+    if x == 0 or x == SIZE - 1 or y == 0 or y == SIZE - 1:
+        return GOLDSH
+
+    if _on_cross(x, y):
+        on_edge = any(
+            not _on_cross(x + dx, y + dy)
+            for dx, dy in ((-1, 0), (1, 0), (0, -1), (0, 1))
+        )
+        if on_edge:
+            return GOLDSH
+        if 15 <= x <= 16 and 15 <= y <= 16:
+            return GOLDHI
+        return GOLD
+
+    if x == 1 or x == SIZE - 2 or y == 1 or y == SIZE - 2:
+        return blend(IVORY, HALO, 0.5)
+
+    return marble(x, y)
+
+
+# ---------------------------------------------------------------------------
+# Variant: holy_brick_pillar
+# Four vertical flutes across 32px (8px stride). Each stride is 2px gold-shadow
+# groove + 6px ivory body with a 1px highlight on the left edge and a 1px
+# shadow on the right. Tileable in both axes — no horizontal banding.
+# ---------------------------------------------------------------------------
+def render_holy_brick_pillar(x: int, y: int) -> tuple:
+    rel = x % 8
+    if rel <= 1:
+        return GOLDSH
+    if rel == 2:
+        return blend(IVORY, HALO, 0.5)
+    if rel == 7:
+        return IVORY_SH
+    return marble(x, y)
+
+
+# ---------------------------------------------------------------------------
+# Variant: holy_brick_tiles
+# 4x4 grid of 7x7 tiles separated by 1px gold mortar. Each tile gets a 1px
+# highlight on its top edge and a 1px shadow on its bottom edge for chamfer.
+# ---------------------------------------------------------------------------
+def render_holy_brick_tiles(x: int, y: int) -> tuple:
+    if x % 8 == 0 or y % 8 == 0:
+        return GOLDSH
+
+    rel_y = y % 8
+    if rel_y == 1:
+        return blend(marble(x, y), HALO, 0.45)
+    if rel_y == 7:
+        return IVORY_SH
+
+    return marble(x, y)
+
+
+# ---------------------------------------------------------------------------
 # Variant registry — add new entries here for chiseled / etched variants.
 # ---------------------------------------------------------------------------
 VARIANTS = {
     "holy_bricks": render_holy_bricks,
+    "chiseled_holy_bricks": render_chiseled_holy_bricks,
+    "holy_brick_pillar": render_holy_brick_pillar,
+    "holy_brick_tiles": render_holy_brick_tiles,
 }
 
 

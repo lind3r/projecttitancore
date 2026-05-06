@@ -38,6 +38,9 @@ local.properties
 ### Personal planning / notes ###
 notes/
 
+### Texture-generator previews (dev artefacts) ###
+scripts/preview_titan_core/
+
 ### Minecraft Modding ###
 run/
 !**/src/**/run/
