@@ -16,6 +16,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -59,6 +60,15 @@ public class ProjectTitanCore {
 
     public static final DeferredItem<BlockItem> TITAN_CORE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("titan_core", TITAN_CORE_BLOCK);
 
+    public static final DeferredBlock<Block> HOLY_BRICKS = BLOCKS.register("holy_bricks",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.SAND)
+                    .strength(2.0f, 6.0f)
+                    .sound(SoundType.STONE)
+                    .requiresCorrectToolForDrops()));
+
+    public static final DeferredItem<BlockItem> HOLY_BRICKS_ITEM = ITEMS.registerSimpleBlockItem("holy_bricks", HOLY_BRICKS);
+
     public static final DeferredItem<TrophyItem> TROPHY_TIER_1 = ITEMS.registerItem("trophy_tier_1", TrophyItem::new);
     public static final DeferredItem<TrophyItem> TROPHY_TIER_2 = ITEMS.registerItem("trophy_tier_2", TrophyItem::new);
     public static final DeferredItem<TrophyItem> TROPHY_TIER_3 = ITEMS.registerItem("trophy_tier_3", TrophyItem::new);
@@ -76,6 +86,7 @@ public class ProjectTitanCore {
                     .icon(() -> TITAN_CORE_BLOCK_ITEM.get().getDefaultInstance())
                     .displayItems((params, output) -> {
                         output.accept(TITAN_CORE_BLOCK_ITEM.get());
+                        output.accept(HOLY_BRICKS_ITEM.get());
                         output.accept(TROPHY_TIER_1.get());
                         output.accept(TROPHY_TIER_2.get());
                         output.accept(TROPHY_TIER_3.get());

@@ -10,6 +10,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 After **any** code or resource/config change, always run `deployToInstance` immediately so the user can test right away. Do not wait to be asked.
 
+## Keeping This File Current
+
+When you add a new dev utility — texture/asset generator, gradle task, helper script under `scripts/`, or any other workflow tool — update CLAUDE.md in the same change so future sessions can find and reuse it. A one-line entry under the matching section (e.g. **Texture Generation**, **Build Commands**) is enough; mention the script path, what it produces, and how to extend it.
+
 ## Git Workflow
 
 You have standing authorization to `git commit` and `git push` (to `master`) when a coherent chunk of work is done. Granted by the user 2026-05-06 — "feel free to commit (including push) when you feel it makes sense going forward."
@@ -73,6 +77,8 @@ Project Titan Core uses a **holy** palette — ivory marble base with gold accen
 **Trophy items** — `scripts/gen_trophy_texture.py`. To add a tier: add a palette to `TIERS` and a grid to `PIXEL_GRIDS`, then run. Writes to `textures/item/`.
 
 **Titan Core block** — `scripts/gen_block_texture.py`. Generates `titan_core.png` and `titan_core_active.png` (32×32) in `textures/block/`. Edit colours/layout in the script, then run it. Do not hand-edit the PNGs.
+
+**Building blocks (tileable)** — `scripts/gen_building_block_texture.py`. Variant-keyed: each entry in `VARIANTS` maps a name to a `render(x, y) -> RGBA` function and produces a 32×32 tileable PNG in `textures/block/`. To add a chiseled/etched sibling, write a new `render_<name>` function (you can reuse the brick layout in `render_holy_bricks` as a base) and add it to `VARIANTS`.
 
 ## Diagnosing Crashes
 
