@@ -6,6 +6,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Project Titan Core** is a NeoForge Minecraft mod (mod ID: `projecttitancore`) targeting Minecraft 1.21.1 with NeoForge 21.1.228. The mod source lives at the repo root. Java 21 is required.
 
+### How this mod fits into the modpack
+
+There are two related repos. Don't confuse them:
+
+- **Project Titan** — the *modpack*, at `C:\Users\lind3\clones\project-titan\`. This is the shipped product.
+- **Project Titan Core** (this repo) — a custom *mod* developed specifically for the modpack. The "Core" in the name means it's the **core / anchor mod of the pack**, not a reference to the in-game `titan_core` block. (The block happens to share the name; the mod is named for its role in the pack.)
+
+The full third-party modlist is now packwiz-managed in the modpack repo at `clones/project-titan/mods/*.pw.toml`. The actual JARs still live in the Prism dev instance at `C:\Users\lind3\AppData\Roaming\PrismLauncher\instances\projecttitan\minecraft\mods\` — that's where to look when a decision here would benefit from knowing what other mods are loaded (compat, integration hooks, recipe overlap). For the structured list, packwiz workflow, junction setup, and quest editing, see `clones/project-titan/CLAUDE.md`.
+
+When this mod gets a published release, wire it into the modpack via `packwiz url add` from the modpack repo (currently deferred — `projecttitancore` is the only mod the modpack ships with from the live install but doesn't track in packwiz).
+
+**Modpack goal:** the player progresses through tiers via **FTB Quests**, with the final tier as the endgame goal. The endgame tier itself is not yet implemented. This mod's planned trophy → quest hook (see "Planned Content" below) is the bridge between this mod and that progression.
+
 ## Build & Deploy Workflow
 
 After **any** code or resource/config change, always run `deployToInstance` immediately so the user can test right away. Do not wait to be asked.
@@ -96,6 +109,17 @@ Search for `FATAL` or `ERROR` — the **first** one is always the root cause. Ev
 4. ✅ Custom trophy item (`TrophyItem`, `trophy_tier_1`), texture via gen script
 5. ⬜ FTB Quests integration (trophy in inventory → quest completion event)
 6. ⬜ Structure building in world (design TBD)
+
+### Holy Bricks — Chisel Mod Compat (TODO)
+
+The 4 holy_bricks variants currently convert into each other via **vanilla stonecutter only** (12 stonecutting recipes, full cross-matrix). Popular chisel mods do **not** auto-pick up vanilla stonecutting — each one has its own mechanism:
+
+- **Chipped** (most likely candidate for 1.21 NeoForge) — uses its own workbenches (Mason's, Carpenter's, …) and a JSON recipe format. Add a Chipped-format datapack in our mod gated on the mod being loaded.
+- **Chisel** (tterrag) — registers "carving groups" via its API at mod load. Last 1.21 NeoForge status unknown; only relevant if updated.
+- **Chisels & Bits** — voxel editing, not variant-swap. Not applicable.
+- **Quark chisel** — partly reads vanilla stonecutting; mostly handles rotated variants.
+
+Decide which chisel mod(s) ship in the modpack first, then add per-mod compat (gated by mod presence). Stonecutter remains the universal baseline regardless.
 
 ### Known Issues
 
