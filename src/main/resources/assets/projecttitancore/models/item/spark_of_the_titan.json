@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "projecttitancore:item/spark_of_the_titan"
+  }
+}

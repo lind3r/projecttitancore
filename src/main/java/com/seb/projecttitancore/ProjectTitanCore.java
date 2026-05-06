@@ -3,7 +3,7 @@ package com.seb.projecttitancore;
 import com.mojang.logging.LogUtils;
 import com.seb.projecttitancore.block.TitanCoreBlock;
 import com.seb.projecttitancore.blockentity.TitanCoreBlockEntity;
-import com.seb.projecttitancore.item.TrophyItem;
+import com.seb.projecttitancore.item.TitanShardItem;
 import com.seb.projecttitancore.menu.TitanCoreMenu;
 import com.seb.projecttitancore.recipe.TitanCoreRecipe;
 import net.minecraft.core.registries.Registries;
@@ -84,9 +84,16 @@ public class ProjectTitanCore {
             () -> new Block(holyBrickProps()));
     public static final DeferredItem<BlockItem> HOLY_BRICK_TILES_ITEM = ITEMS.registerSimpleBlockItem("holy_brick_tiles", HOLY_BRICK_TILES);
 
-    public static final DeferredItem<TrophyItem> TROPHY_TIER_1 = ITEMS.registerItem("trophy_tier_1", TrophyItem::new);
-    public static final DeferredItem<TrophyItem> TROPHY_TIER_2 = ITEMS.registerItem("trophy_tier_2", TrophyItem::new);
-    public static final DeferredItem<TrophyItem> TROPHY_TIER_3 = ITEMS.registerItem("trophy_tier_3", TrophyItem::new);
+    public static final DeferredItem<TitanShardItem> MOTE_OF_THE_TITAN = ITEMS.registerItem("mote_of_the_titan", TitanShardItem::new);
+    public static final DeferredItem<TitanShardItem> EMBER_OF_THE_TITAN = ITEMS.registerItem("ember_of_the_titan", TitanShardItem::new);
+    public static final DeferredItem<TitanShardItem> SPARK_OF_THE_TITAN = ITEMS.registerItem("spark_of_the_titan", TitanShardItem::new);
+    public static final DeferredItem<TitanShardItem> PULSE_OF_THE_TITAN = ITEMS.registerItem("pulse_of_the_titan", TitanShardItem::new);
+    public static final DeferredItem<TitanShardItem> ECHO_OF_THE_TITAN = ITEMS.registerItem("echo_of_the_titan", TitanShardItem::new);
+    public static final DeferredItem<TitanShardItem> WILL_OF_THE_TITAN = ITEMS.registerItem("will_of_the_titan", TitanShardItem::new);
+    public static final DeferredItem<TitanShardItem> VOICE_OF_THE_TITAN = ITEMS.registerItem("voice_of_the_titan", TitanShardItem::new);
+    public static final DeferredItem<TitanShardItem> SOUL_OF_THE_TITAN = ITEMS.registerItem("soul_of_the_titan", TitanShardItem::new);
+    public static final DeferredItem<TitanShardItem> ASCENDANT_SHARD = ITEMS.registerItem("ascendant_shard", TitanShardItem::new);
+    public static final DeferredItem<TitanShardItem> HEART_OF_THE_TITAN = ITEMS.registerItem("heart_of_the_titan", TitanShardItem::new);
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TitanCoreBlockEntity>> TITAN_CORE_BLOCK_ENTITY =
             BLOCK_ENTITY_TYPES.register("titan_core", () -> BlockEntityType.Builder.of(TitanCoreBlockEntity::new, TITAN_CORE_BLOCK.get()).build(null));
@@ -105,9 +112,16 @@ public class ProjectTitanCore {
                         output.accept(CHISELED_HOLY_BRICKS_ITEM.get());
                         output.accept(HOLY_BRICK_PILLAR_ITEM.get());
                         output.accept(HOLY_BRICK_TILES_ITEM.get());
-                        output.accept(TROPHY_TIER_1.get());
-                        output.accept(TROPHY_TIER_2.get());
-                        output.accept(TROPHY_TIER_3.get());
+                        output.accept(MOTE_OF_THE_TITAN.get());
+                        output.accept(EMBER_OF_THE_TITAN.get());
+                        output.accept(SPARK_OF_THE_TITAN.get());
+                        output.accept(PULSE_OF_THE_TITAN.get());
+                        output.accept(ECHO_OF_THE_TITAN.get());
+                        output.accept(WILL_OF_THE_TITAN.get());
+                        output.accept(VOICE_OF_THE_TITAN.get());
+                        output.accept(SOUL_OF_THE_TITAN.get());
+                        output.accept(ASCENDANT_SHARD.get());
+                        output.accept(HEART_OF_THE_TITAN.get());
                     })
                     .build());
 

@@ -1,19 +1,19 @@
 {
   "type": "projecttitancore:titan_core",
   "inputs": [
-    {"item": "minecraft:dirt", "count": 64},
-    {"item": "minecraft:dirt", "count": 64},
-    {"item": "minecraft:dirt", "count": 64},
-    {"item": "minecraft:dirt", "count": 64},
-    {"item": "minecraft:dirt", "count": 64},
-    {"item": "minecraft:dirt", "count": 64},
-    {"item": "minecraft:dirt", "count": 64},
-    {"item": "minecraft:dirt", "count": 64},
-    {"item": "minecraft:dirt", "count": 64}
+    {"item": "projecttitancore:holy_bricks", "count": 64},
+    {"item": "projecttitancore:holy_bricks", "count": 64},
+    {"item": "projecttitancore:holy_bricks", "count": 64},
+    {"item": "projecttitancore:holy_bricks", "count": 64},
+    {"item": "projecttitancore:holy_bricks", "count": 64},
+    {"item": "projecttitancore:holy_bricks", "count": 64},
+    {"item": "projecttitancore:holy_bricks", "count": 64},
+    {"item": "projecttitancore:holy_bricks", "count": 64},
+    {"item": "projecttitancore:holy_bricks", "count": 64}
   ],
-  "fluid": {"fluid": "minecraft:water", "amount": 10000},
-  "energy_per_tick": 500,
-  "crafting_time": 1200,
-  "result": {"id": "projecttitancore:trophy_tier_1", "count": 1},
+  "fluid": {"fluid": "minecraft:water", "amount": 5000},
+  "energy_per_tick": 200,
+  "crafting_time": 400,
+  "result": {"id": "projecttitancore:mote_of_the_titan", "count": 1},
   "tier": 1
 }

@@ -6,7 +6,14 @@
   "block.projecttitancore.titan_core": "Titan Core",
   "emi.category.projecttitancore.titan_core": "Titan Core",
   "itemGroup.projecttitancore": "Project Titan Core",
-  "item.projecttitancore.trophy_tier_1": "Trophy - Tier 1",
-  "item.projecttitancore.trophy_tier_2": "Trophy - Tier 2",
-  "item.projecttitancore.trophy_tier_3": "Trophy - Tier 3"
+  "item.projecttitancore.mote_of_the_titan": "Mote of the Titan",
+  "item.projecttitancore.ember_of_the_titan": "Ember of the Titan",
+  "item.projecttitancore.spark_of_the_titan": "Spark of the Titan",
+  "item.projecttitancore.pulse_of_the_titan": "Pulse of the Titan",
+  "item.projecttitancore.echo_of_the_titan": "Echo of the Titan",
+  "item.projecttitancore.will_of_the_titan": "Will of the Titan",
+  "item.projecttitancore.voice_of_the_titan": "Voice of the Titan",
+  "item.projecttitancore.soul_of_the_titan": "Soul of the Titan",
+  "item.projecttitancore.ascendant_shard": "Ascendant Shard",
+  "item.projecttitancore.heart_of_the_titan": "Heart of the Titan"
 }

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "projecttitancore:item/trophy_tier_3"
+    "layer0": "projecttitancore:item/mote_of_the_titan"
   }
 }

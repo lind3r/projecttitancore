@@ -1,0 +1,19 @@
+{
+  "type": "projecttitancore:titan_core",
+  "inputs": [
+    {"item": "minecraft:diamond_block", "count": 64},
+    {"item": "minecraft:diamond_block", "count": 64},
+    {"item": "minecraft:diamond_block", "count": 64},
+    {"item": "minecraft:diamond_block", "count": 64},
+    {"item": "projecttitancore:will_of_the_titan", "count": 64},
+    {"item": "minecraft:diamond_block", "count": 64},
+    {"item": "minecraft:diamond_block", "count": 64},
+    {"item": "minecraft:diamond_block", "count": 64},
+    {"item": "minecraft:diamond_block", "count": 64}
+  ],
+  "fluid": {"tag": "c:molten_steel", "amount": 20000},
+  "energy_per_tick": 20000,
+  "crafting_time": 1800,
+  "result": {"id": "projecttitancore:voice_of_the_titan", "count": 1},
+  "tier": 7
+}
