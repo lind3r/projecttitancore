@@ -130,7 +130,7 @@ The Core's progression is built around 10 named **Titan Shards**, each unlocked 
 | 9 | `ascendant_shard` | Ascendant Shard | `netherite_block` |
 | 10 | `heart_of_the_titan` | Heart of the Titan | `netherite_block` |
 
-All 10 shards are instances of `TitanShardItem` (a thin `Item` subclass — no per-tier behavior on the class side; differences live in the recipe and texture). Recipe JSONs are `data/projecttitancore/recipe/titan_core_t{1..10}.json`. The fluid scales `water` → `lava` → `c:molten_steel`; energy/time both scale ×~2 per tier. The shard input for T2-T10 sits at index 4 of the `inputs` array — that maps to the centre slot of the 3×3 GUI grid. `titan_core_test.json` is preserved as a low-cost log-input variant of T1 for in-dev recipe verification.
+All 10 shards are instances of `TitanShardItem` (a thin `Item` subclass — no per-tier behavior on the class side; differences live in the recipe and texture). Recipe JSONs are `data/projecttitancore/recipe/titan_core_t{1..10}.json`. Fluids progress by rarity tier: `water` (T1-T2) → `lava` (T3) → `c:molten_copper` (T4) → `c:molten_gold` (T5) → `c:honey` (T6) → `c:molten_steel` (T7) → `c:experience` (T8) → `enderio:vapor_of_levity` (T9) → `enderio:liquid_sunshine` (T10). Amounts scale 4k → 100k and **must stay ≤ `FLUID_CAPACITY` (100,000 mB)** — the tank is static, no dynamic resize, so a recipe that requests more than 100k can never be filled. Energy/time both scale ×~2 per tier. The shard input for T2-T10 sits at index 4 of the `inputs` array — that maps to the centre slot of the 3×3 GUI grid. `titan_core_test.json` is preserved as a low-cost log-input variant of T1 for in-dev recipe verification.
 
 **Current ingredient costs are placeholder** — every input slot in T1-T10 is `count: 64`, including the prior-shard slot. This is intentional for the initial wiring; balance pass comes later (likely shard count → 1, bulk counts varied per tier).
 
@@ -138,13 +138,41 @@ When adding an 11th tier or renaming, update **all five** in lockstep: `ProjectT
 
 ### Holy Bricks — Chisel Mod Compat
 
-The 4 holy_bricks variants convert into each other at any **Chipped** workbench (Mason's Table is the thematically natural choice; mechanically all chipped workbenches resolve any `chipped:workbench` recipe globally — there's no per-workbench filter in `WorkbenchMenu.updateResults`).
+The holy_bricks variants (currently 6: `holy_bricks`, `chiseled_holy_bricks`, `holy_brick_pillar`, `holy_brick_tiles`, `gilded_holy_bricks`, `engraved_holy_bricks`) convert into each other in-hand using a **Chisel Modern** chisel (no workbench/recipe — the chisel item cycles between blocks in the same carving group, and right-clicking a placed block changes its variant).
 
-Wiring (all in `src/main/resources/data/projecttitancore/`):
-- `tags/block/holy_bricks.json` + `tags/item/holy_bricks.json` — list all 4 variants. Chipped ships parallel block+item tags; do the same when adding new carving groups.
-- `recipe/holy_bricks_chipped.json` — `chipped:workbench` recipe, single-ingredient = the tag, gated by `neoforge:mod_loaded` on `chipped`.
+Chisel Modern discovers carving groups by scanning **block tags whose namespace is literally `chisel` and whose path starts with `carving/`** (see `CarvingHelper.getCarvingGroup` — the filter is `tag.namespace == "chisel" && tag.path.startsWith("carving/")`). So the tag files live under our mod's resources but in the `chisel` namespace:
 
-Vanilla stonecutter recipes were removed in this migration. If we later add another carving group (e.g. holy_marble), repeat the same pattern: add the two parallel tags + one recipe JSON. Don't override `data/chipped/recipe/mason_table.json` — it's brittle on Chipped updates.
+- `data/chisel/tags/block/carving/holy_bricks.json` — every variant block ID.
+- `data/chisel/tags/item/carving/holy_bricks.json` — every variant item ID (used when chiseling an item in inventory rather than a placed block).
+
+When adding another holy_bricks variant, update in lockstep: `ProjectTitanCore.java` (block + blockitem registration + creative tab), `lang/en_us.json`, blockstate + block model + item model JSONs, the loot table, both `data/chisel/.../carving/holy_bricks.json` files, and `gen_building_block_texture.py` (add a `render_<name>` and a `VARIANTS` entry, then re-run).
+
+If we later add another carving group (e.g. holy_marble), repeat the same pattern: one parallel block+item tag pair under `data/chisel/tags/.../carving/<group>.json`. Do **not** put the tags under `data/projecttitancore/tags/...` — chisel will not see them, only the `chisel` namespace is scanned.
+
+### World Response on Craft / Tier-Up
+
+A craft completion at the Titan Core should feel like the world reacts. Effects are split into **per-craft** (every successful craft, any tier) and **per-tier-up** (escalating world changes that compound).
+
+**Implemented — holy sky tint while crafting.** While any nearby loaded Titan Core has `TitanCoreBlock.CRAFTING=true`, the sky/fog biases toward holy gold (`#FFE054`); when no Core is crafting it decays to nothing over ~5s. The slow decay deliberately absorbs rapid start/stop flicker (e.g. recipe oscillating because input RF/t is borderline) without strobing the sky. No network packet — the BE's blockstate is already client-synced, so a client-side ticker registered in `TitanCoreBlock.getTicker` reports each loaded Core's CRAFTING state every tick into `SkyTintEffect.observe(pos, crafting)`. `SkyTintEffect.onComputeFogColor` (subscribed in `ClientEvents`) biases `ViewportEvent.ComputeFogColor` against a smoothed `currentIntensity` that ramps over `RISE_TICKS` (10 = ~0.5s rise) and decays over `DECAY_TICKS` (100 = ~5s). When the BE unloads it stops ticking, the observation goes stale within one tick, and the tint decays naturally. Tweak constants at the top of `SkyTintEffect` to retune.
+
+**Planned — per-tier-up world response.** The brainstorm (2026-05-07) proposes the world growing progressively hostile / sublime as tiers advance, with each tier *stacking* on previous. Doable inside this mod plus already-installed pack mods — no new deps required. Sketch:
+
+| Tier | Theme | Mechanism |
+|---|---|---|
+| 1 Mote | World stirs | Permanent holy beam (already exists); ambient choir hum within ~32 blocks |
+| 2 Ember | Mobs harden | Hostile mob HP +10% globally — Apothic Attributes modifier or `AttributeModifier` registered from this mod |
+| 3 Spark | Nights lengthen | Night-tick rate scaled |
+| 4 Pulse | Affixed mobs roam | Apotheosis affix-rarity bumped one tier |
+| 5 Echo | Storms answer | Lightning frequency + thunderstorm chance up; Apothic Spawners in dungeons buffed |
+| 6 Will | Hunt begins | Rare nightly "Wraith of the Titan" spawn (Citadel-based or repurposed Vex) that pathfinds to player |
+| 7 Voice | Gateways tear open | Random Gateways to Eternity opens within ~200 blocks every few in-game days (KubeJS scheduler or BE tick) |
+| 8 Soul | Blood moons | Every 5 nights — sky red, mob HP +50%, damage +25%, light level halved |
+| 9 Ascendant | Heralds appear | Cataclysm miniboss spawns once at a marked location after tier-up |
+| 10 Heart | Apotheosis | Eternal stormy twilight + roughly 2× mob stats — but player gets permanent divine buff (Resistance/Regen + retribution) |
+
+Implementation hook: add `onTierAdvanced(int newTier)` on `TitanCoreBlockEntity` that fires once per upgrade. Persist applied tier-effects in level data so they survive reload. Use FTB Quests reward commands for the *narrative* side; use the BE/level data for the *mechanical* side. Most "scheduler" tier effects (gateway spawns, blood moons) should live in custom code rather than KubeJS so state is coherent with the BE — KubeJS is fine for iteration but not for load-bearing state.
+
+**Mods leveraged:** Apotheosis (affixes), Apothic Attributes (global modifiers), Apothic Spawners, Gateways to Eternity, L_Ender's Cataclysm (endgame bosses), Citadel + Alex's Mobs (mob roster), KubeJS (pack-side iteration). Full modlist is at `clones/project-titan/mods/*.pw.toml`.
 
 ### Known Issues
 

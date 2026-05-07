@@ -165,6 +165,77 @@ def render_holy_brick_tiles(x: int, y: int) -> tuple:
 
 
 # ---------------------------------------------------------------------------
+# Variant: gilded_holy_bricks
+# Holy bricks with bright-gold mortar (instead of gold-shadow) and a 2x2 gold
+# stud in the centre of every brick. Reads more ornate / cathedral-treasury.
+# ---------------------------------------------------------------------------
+def render_gilded_holy_bricks(x: int, y: int) -> tuple:
+    BRICK_H = 8
+    BRICK_W = 16
+
+    if y % BRICK_H == 0:
+        return GOLD
+
+    row = y // BRICK_H
+    if row % 2 == 0:
+        is_mortar_v = (x % BRICK_W == 0)
+    else:
+        is_mortar_v = (x % BRICK_W == 8)
+    if is_mortar_v:
+        return GOLD
+
+    rel_y = y % BRICK_H
+    rel_x = x % BRICK_W if row % 2 == 0 else (x + 8) % BRICK_W
+
+    # 2x2 bright stud at brick centre
+    if rel_x in (7, 8) and rel_y in (3, 4):
+        return GOLDHI
+
+    if rel_y == 1:
+        return blend(marble(x, y), HALO, 0.45)
+    if rel_y == BRICK_H - 1:
+        return IVORY_SH
+    return marble(x, y)
+
+
+# ---------------------------------------------------------------------------
+# Variant: engraved_holy_bricks
+# Holy bricks where each brick face carries a tiny etched Greek cross. Cross
+# arms are 1px wide × 5px long, in gold-shadow to read as engraved (not
+# applied gold). Same brick layout & mortar as the base variant.
+# ---------------------------------------------------------------------------
+def render_engraved_holy_bricks(x: int, y: int) -> tuple:
+    BRICK_H = 8
+    BRICK_W = 16
+
+    if y % BRICK_H == 0:
+        return GOLDSH
+
+    row = y // BRICK_H
+    if row % 2 == 0:
+        is_mortar_v = (x % BRICK_W == 0)
+    else:
+        is_mortar_v = (x % BRICK_W == 8)
+    if is_mortar_v:
+        return GOLDSH
+
+    rel_y = y % BRICK_H
+    rel_x = x % BRICK_W if row % 2 == 0 else (x + 8) % BRICK_W
+
+    # Etched Greek cross: vertical 1×5 + horizontal 5×1 centred at (7-8, 3-4).
+    on_vert = rel_x == 7 and 2 <= rel_y <= 6
+    on_horz = 5 <= rel_x <= 9 and rel_y == 4
+    if on_vert or on_horz:
+        return GOLDSH
+
+    if rel_y == 1:
+        return blend(marble(x, y), HALO, 0.45)
+    if rel_y == BRICK_H - 1:
+        return IVORY_SH
+    return marble(x, y)
+
+
+# ---------------------------------------------------------------------------
 # Variant registry — add new entries here for chiseled / etched variants.
 # ---------------------------------------------------------------------------
 VARIANTS = {
@@ -172,6 +243,8 @@ VARIANTS = {
     "chiseled_holy_bricks": render_chiseled_holy_bricks,
     "holy_brick_pillar": render_holy_brick_pillar,
     "holy_brick_tiles": render_holy_brick_tiles,
+    "gilded_holy_bricks": render_gilded_holy_bricks,
+    "engraved_holy_bricks": render_engraved_holy_bricks,
 }
 
 

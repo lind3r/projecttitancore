@@ -38,6 +38,9 @@ local.properties
 ### Personal planning / notes ###
 notes/
 
+### Claude Code agent worktrees ###
+.claude/worktrees/
+
 ### Texture-generator previews (dev artefacts) ###
 scripts/preview_titan_core/
 scripts/preview_titan/
