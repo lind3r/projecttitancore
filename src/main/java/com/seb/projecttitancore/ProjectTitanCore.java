@@ -67,6 +67,10 @@ public class ProjectTitanCore {
                     .mapColor(MapColor.METAL)
                     .strength(3.5f)
                     .sound(SoundType.METAL)
+                    // Glass cage model is not a full cube — without noOcclusion, neighbouring
+                    // blocks cull their faces against the Core's full AABB and the translucent
+                    // gaps in the cage become x-ray windows into anything below.
+                    .noOcclusion()
                     .lightLevel(state -> state.getValue(TitanCoreBlock.CRAFTING) ? 15 : 0)));
 
     public static final DeferredItem<BlockItem> TITAN_CORE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("titan_core", TITAN_CORE_BLOCK);

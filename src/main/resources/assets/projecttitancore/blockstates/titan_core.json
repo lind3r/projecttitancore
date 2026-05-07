@@ -1,6 +1,6 @@
 {
   "variants": {
     "crafting=false": { "model": "projecttitancore:block/titan_core" },
-    "crafting=true":  { "model": "projecttitancore:block/titan_core_active" }
+    "crafting=true":  { "model": "projecttitancore:block/titan_core" }
   }
 }

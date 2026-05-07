@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "projecttitancore:block/titan_core_active"
-  }
-}

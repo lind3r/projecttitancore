@@ -82,14 +82,19 @@ Project Titan Core uses a **holy** palette — ivory marble base with gold accen
 | Slot well (dark warm) | `#2A1F08` | 42, 31, 8 |
 
 **Where it's used:**
-- Block textures — `scripts/gen_block_texture.py` (ivory base, Greek cross, halo disc, sunburst on top/bottom).
+- Block textures — `scripts/gen_block_texture.py` produces the cage textures (`titan_core_frame.png`, `titan_core_glass.png`) plus the legacy single-face texture (kept for particles + motif previews).
+- Block model — `models/block/titan_core.json` is a multi-cuboid "glass cage": 12 gold edge frames + 6 inset translucent ivory panels (`render_type: translucent`). The blockstate maps both `crafting=false` and `crafting=true` to this same model — the active/idle visual difference is now driven entirely by the BER (sphere brightness/colour) rather than two model variants. `titan_core_active.json` is intentionally absent.
+- Pulsing inner sphere — `client/TitanCoreRenderer.java` (`renderSphere`, `SPHERE_TYPE`). Two additive layers (inner core + outer halo) drawn as a UV sphere centred in the cage; colour lerps from halo-bright → gold highlight as `titanTier` rises and snaps to full gold while crafting; pulse rides the same `PULSE_PERIOD_TICKS` clock as the projection. Adjust `SPHERE_BASE_RADIUS`, `SPHERE_GLOW_SCALE`, or the `baseBrightness` ladder at the top of `renderSphere` to retune.
 - GUI — `screen/TitanCoreScreen.java` (`COLOR_*` constants).
 
 ## Texture Generation
 
 **Titan Shards (10 tiers)** — `scripts/gen_shard_texture.py`. All 10 shards share a single `SHARD_GRID` silhouette; the visual progression is palette-only (dim → fiery → cool → divine, with tiers 8-10 pulling from the holy palette). To retune a tier, edit its `TIERS` entry; to add a tier, add the palette and reference the slug. Writes to `textures/item/`.
 
-**Titan Core block** — `scripts/gen_block_texture.py`. Generates `titan_core.png` and `titan_core_active.png` (32×32) — the same texture is mapped to every face via `cube_all`. The centre motif is pluggable: `MOTIFS` registers `cross`, `rings`, `eye`, `rosette`, `sunwheel`. Change `MOTIF` near the top of the script and re-run to swap the live design. Every run also writes inactive previews of *all* motifs to `scripts/preview_titan_core/` (gitignored) so you can compare without rebuilding. To add a new motif, write a `motif_<name>(x, y, active)` function returning the gold-coloured pixel for any pixel inside the design (or `None` outside) and add it to `MOTIFS`. Do not hand-edit the PNGs.
+**Titan Core block** — `scripts/gen_block_texture.py`. Generates four textures:
+- `titan_core_frame.png` (16×16) — solid gold metal, used on the 12 edge cuboids of the cage model.
+- `titan_core_glass.png` (16×16) — translucent ivory (~15% alpha base, ~30% on a faint reflection streak, gold inner border), used on the 6 inset panes.
+- `titan_core.png` / `titan_core_active.png` (32×32) — the legacy single-face motif texture, no longer wired into the live block model but still emitted because the block's particle texture and `scripts/preview_titan_core/` (gitignored) reference it. The centre motif is pluggable: `MOTIFS` registers `cross`, `rings`, `eye`, `rosette`, `sunwheel`; change `MOTIF` near the top of the script and re-run to swap the live design. To add a new motif, write a `motif_<name>(x, y, active)` function returning the gold-coloured pixel for any pixel inside the design (or `None` outside) and add it to `MOTIFS`. Do not hand-edit the PNGs.
 
 **Building blocks (tileable)** — `scripts/gen_building_block_texture.py`. Variant-keyed: each entry in `VARIANTS` maps a name to a `render(x, y) -> RGBA` function and produces a 32×32 tileable PNG in `textures/block/`. To add a chiseled/etched sibling, write a new `render_<name>` function (you can reuse the brick layout in `render_holy_bricks` as a base) and add it to `VARIANTS`.
 

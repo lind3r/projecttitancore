@@ -1,11 +1,21 @@
 """
 Generate block textures for Project Titan Core - holy theme.
-Outputs 32x32 PNGs for the inactive and active states. The same texture is
-used on every face of the block (cube_all model).
+
+The block uses a multi-cuboid "glass cage" model — gold edge frame around 6
+inset translucent glass panels — so this script emits two texture sets:
+
+  1. Cage textures (the live ones referenced by titan_core.json):
+       titan_core_frame.png  — solid gold metal, used on the 12 edge cuboids
+       titan_core_glass.png  — translucent ivory, used on the 6 inset panes
+
+  2. Legacy single-face textures (titan_core.png / titan_core_active.png):
+       still emitted for the block's particle texture (so break particles read
+       as gold-and-ivory) and for previewing the centre motif. The block model
+       itself no longer references titan_core.png on any face.
 
 Run: python scripts/gen_block_texture.py
 
-The face is built in layers:
+The single face is built in layers:
   rim/edge frame → halo disc at centre → motif (selectable) →
   diagonal sunburst rays → outer halo bloom → marble background.
 
@@ -238,9 +248,67 @@ def generate_face(motif_fn, active: bool = False) -> list:
     return [[face_pixel(x, y, motif_fn, active) for x in range(SIZE)] for y in range(SIZE)]
 
 
-def write_png(path: str, pixels: list) -> None:
+# ---------------------------------------------------------------------------
+# Cage textures — the live block model uses these.
+# Frame: solid gold metal with subtle highlight/shadow band so 2-px-thick
+# edges read as bevelled rather than flat. Tileable.
+# Glass: translucent ivory, slight reflective streak, mostly clear.
+# ---------------------------------------------------------------------------
+FRAME_SIZE = 16
+GLASS_SIZE = 16
+
+
+def frame_pixel(x: int, y: int) -> tuple:
+    """16×16 ivory-marble tile — same family as the holy_bricks palette so the
+    cage reads as marble pillars rather than wooden trim. Top edge highlight,
+    bottom edge shadow, gentle veining inside, with a single thin gold pinstripe
+    halfway up to keep the holy accent."""
+    if y == 0:
+        return HALO_HI
+    if y == FRAME_SIZE - 1:
+        return IVORY_SH
+    if y == 8:                       # gold pinstripe inlay
+        return GOLD
+    if x == 0:
+        return blend(IVORY, HALO_HI, 0.4)
+    if x == FRAME_SIZE - 1:
+        return blend(IVORY, IVORY_SH, 0.4)
+    if x % 4 == 0:
+        return blend(IVORY, IVORY_SH, 0.3)        # subtle vein
+    if (x * 3 + y * 5) % 17 == 0:
+        return IVORY_SH                            # marble fleck
+    if (x + y) % 7 == 0:
+        return blend(IVORY, HALO_HI, 0.25)         # subtle highlight
+    return IVORY
+
+
+def glass_pixel(x: int, y: int) -> tuple:
+    """16×16 translucent ivory. Base ~15% opacity with a faint diagonal
+    highlight band at ~30% to suggest reflection. Edges slightly tinted gold
+    so adjacent panes read as having a thin gilded inner border."""
+    base_alpha = 38           # ~15% opacity
+    streak_alpha = 75         # ~30% opacity
+    edge_alpha = 90           # subtle gold rim
+    # Inner gold rim — 1-px frame inside the texture.
+    if x == 0 or x == GLASS_SIZE - 1 or y == 0 or y == GLASS_SIZE - 1:
+        return (GOLDHI[0], GOLDHI[1], GOLDHI[2], edge_alpha)
+    # Diagonal highlight streak.
+    if abs((x + y) - 14) <= 1 or abs((x + y) - 6) <= 0:
+        return (HALO_HI[0], HALO_HI[1], HALO_HI[2], streak_alpha)
+    return (IVORY[0], IVORY[1], IVORY[2], base_alpha)
+
+
+def generate_frame() -> list:
+    return [[frame_pixel(x, y) for x in range(FRAME_SIZE)] for y in range(FRAME_SIZE)]
+
+
+def generate_glass() -> list:
+    return [[glass_pixel(x, y) for x in range(GLASS_SIZE)] for y in range(GLASS_SIZE)]
+
+
+def write_png(path: str, pixels: list, size: int = SIZE) -> None:
     with open(path, "wb") as f:
-        f.write(build_png(pixels))
+        f.write(build_png(pixels, size=size))
 
 
 def main():
@@ -270,6 +338,16 @@ def main():
         out_path = os.path.join(texture_dir, f"{name}.png")
         write_png(out_path, pixels)
         print(f"  Live ({MOTIF}): {os.path.relpath(out_path, script_dir)}")
+
+    # Cage textures — referenced by the live block model.
+    cage_outputs = [
+        ("titan_core_frame", generate_frame(), FRAME_SIZE),
+        ("titan_core_glass", generate_glass(), GLASS_SIZE),
+    ]
+    for name, pixels, size in cage_outputs:
+        out_path = os.path.join(texture_dir, f"{name}.png")
+        write_png(out_path, pixels, size=size)
+        print(f"  Cage:           {os.path.relpath(out_path, script_dir)}")
 
 
 if __name__ == "__main__":
