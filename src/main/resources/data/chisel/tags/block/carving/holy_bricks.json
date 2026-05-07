@@ -3,6 +3,8 @@
     "projecttitancore:holy_bricks",
     "projecttitancore:holy_brick_pillar",
     "projecttitancore:holy_brick_tiles",
-    "projecttitancore:chiseled_holy_bricks"
+    "projecttitancore:chiseled_holy_bricks",
+    "projecttitancore:gilded_holy_bricks",
+    "projecttitancore:engraved_holy_bricks"
   ]
 }
