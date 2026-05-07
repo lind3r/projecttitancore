@@ -167,6 +167,29 @@ When adding another holy_bricks variant, update in lockstep: `ProjectTitanCore.j
 
 If we later add another carving group (e.g. holy_marble), repeat the same pattern: one parallel block+item tag pair under `data/chisel/tags/.../carving/<group>.json`. Do **not** put the tags under `data/projecttitancore/tags/...` — chisel will not see them, only the `chisel` namespace is scanned.
 
+### Cronos — Endgame Boss (Tier 10 unlock)
+
+The capstone fight for the modpack. Cronos is a buffed `cataclysm:ancient_remnant` spawned as the final wave of a custom **Gateways to Eternity** arena (`projecttitancore:cronos_gauntlet`). Datapack-only on the gateway side; one small Java listener bridges kills back to a quest-friendly hook.
+
+**Gateway** — `data/projecttitancore/gateways/cronos_gauntlet.json`. Five waves, holy theme, escalating attribute modifiers per wave:
+- W1: 6× vex
+- W2: 3× vindicator (+50% HP, +30% dmg)
+- W3: 2× evoker (+100% HP, +50% dmg, +4 armor)
+- W4: 1× evoker + 4× vindicator + 6× vex (+150% HP, +75% dmg, +6 armor)
+- W5: **Cronos** — 1× `cataclysm:ancient_remnant` with embedded `nbt` (CustomName "Cronos, Devourer of Time" gold/bold, `Tags: ["projecttitancore_cronos"]`, PersistenceRequired). Wave modifiers stack to ~×4 max-health, ×2 attack-damage, +12 armor, +8 armor toughness, KB resist 1.0, projectile damage ×2 (Apothic Attributes).
+
+The `nbt` field on `gateways:standard` wave-entity JSON is decoded as `CompoundTag` (key `nbt`) — Gateways injects entity `id` itself before passing to `EntityType.loadEntityRecursive`, so don't include it. Gateway final reward is currently `1× minecraft:gold_ingot` placeholder; real loot table is TBD.
+
+**Boss-detection bridge** — `events/CronosEvents.java`. Subscribes to `LivingDeathEvent`; if victim has the `projecttitancore_cronos` NBT tag and was killed by a `ServerPlayer`, awards the hidden advancement `projecttitancore:cronos_slain` (criterion `impossible`, granted in code). Anything that watches that advancement — FTB Quests `ftbquests:advancement` task, vanilla advancement chains, function triggers — fires correctly. The base entity stays a regular Ancient Remnant, so we don't need to hard-distinguish "our Cronos" anywhere except this one tag check.
+
+**How to summon for testing.** Either `/give @p gateways:gate_pearl[gateways:gateway="projecttitancore:cronos_gauntlet"]` then right-click the pearl on the ground, or summon the gateway entity directly with `/summon gateways:normal_gateway ~ ~ ~ {Gateway:"projecttitancore:cronos_gauntlet"}`. Standing inside the column starts wave 1.
+
+**Status as of 2026-05-08:** shipped but **untested in-game** — the mod compiles and packages cleanly, but no one has actually run the gauntlet yet. First time it's run, watch `latest.log` for any data-pack load errors (the most likely failure is the `nbt` field on `gateways:standard` being decoded as SNBT-string vs JSON-object — current file uses JSON-object form; if it errors, swap to `"nbt": "{CustomName:'{\"text\":\"Cronos, Devourer of Time\",\"color\":\"gold\",\"bold\":true}',CustomNameVisible:1b,PersistenceRequired:1b,Tags:[\"projecttitancore_cronos\"]}"`).
+
+**Pack-side wiring** (FTB Quests "Apotheosis of the Builder" + "The Eternal Cycle", Altar-of-the-Void disable, real loot table) lives in the modpack repo's CLAUDE.md under `the_titan_core → Cronos boss chain (post-T10)`. Don't reproduce that list here — keep the questbook concerns on the pack side.
+
+**When changing wave composition or stat scaling**, edit only the gateway JSON — no Java touchpoint needed unless the boss base entity changes (in which case verify the Cataclysm entity ID still resolves and re-tune the modifiers, since base stats differ across boss entities).
+
 ### World Response on Craft / Tier-Up
 
 A craft completion at the Titan Core should feel like the world reacts. Effects are split into **per-craft** (every successful craft, any tier) and **per-tier-up** (escalating world changes that compound).
