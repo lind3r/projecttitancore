@@ -25,11 +25,11 @@ public class TitanCoreRenderer implements BlockEntityRenderer<TitanCoreBlockEnti
             ResourceLocation.withDefaultNamespace("textures/entity/beacon_beam.png");
     private static final int BEAM_HEIGHT = TitanCoreBlockEntity.BEAM_RENDER_HEIGHT;
     private static final int BEAM_COLOR = 0xFFE054;
-    private static final float INNER_RADIUS = 0.15f;
-    private static final float OUTER_RADIUS = 0.22f;
-    /** Idle beam is rendered continuously at ~30% the radii of the active beam. */
-    private static final float IDLE_INNER_RADIUS = 0.04f;
-    private static final float IDLE_OUTER_RADIUS = 0.08f;
+    private static final float INNER_RADIUS = 0.30f;
+    private static final float OUTER_RADIUS = 0.44f;
+    /** Idle beam is rendered at ~30% the radii of the active beam, only while the projection is visible. */
+    private static final float IDLE_INNER_RADIUS = 0.08f;
+    private static final float IDLE_OUTER_RADIUS = 0.16f;
 
     /** Degrees per game tick. ~0.4 deg/tick = full rotation in ~15 seconds. */
     private static final float ROTATION_SPEED_DEG_PER_TICK = 0.4f;
@@ -68,15 +68,18 @@ public class TitanCoreRenderer implements BlockEntityRenderer<TitanCoreBlockEnti
         if (be.getLevel() == null) return;
 
         long gameTime = be.getLevel().getGameTime();
+        boolean projectionShown = be.titanTier > 0 && TitanProjection.get().maxTier > 0;
 
         if (be.getBlockState().getValue(TitanCoreBlock.CRAFTING)) {
             renderBeamPass(pose, buffers, partialTick, gameTime, 0f, INNER_RADIUS, OUTER_RADIUS);
             renderBeamPass(pose, buffers, partialTick, gameTime, 45f, INNER_RADIUS, OUTER_RADIUS);
-        } else {
+        } else if (projectionShown) {
+            // Idle beam only renders when the projection is visible — otherwise the beam would
+            // point at empty air, which reads as broken rather than dormant.
             renderBeamPass(pose, buffers, partialTick, gameTime, 0f, IDLE_INNER_RADIUS, IDLE_OUTER_RADIUS);
         }
 
-        if (be.titanTier > 0) {
+        if (projectionShown) {
             renderProjection(be.titanTier, partialTick, gameTime, pose, buffers);
         }
     }

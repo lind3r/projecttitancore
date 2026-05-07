@@ -3,6 +3,7 @@ package com.seb.projecttitancore.block;
 import com.mojang.serialization.MapCodec;
 import com.seb.projecttitancore.ProjectTitanCore;
 import com.seb.projecttitancore.blockentity.TitanCoreBlockEntity;
+import com.seb.projecttitancore.client.SkyTintEffect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -95,6 +96,13 @@ public class TitanCoreBlock extends BaseEntityBlock {
     @Override
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> type) {
+        if (level.isClientSide) {
+            // Client-side ticker only observes the CRAFTING blockstate to drive the holy sky tint.
+            // Lambda body — and the SkyTintEffect class — only loads on the client because this
+            // branch is never entered on the dedicated server.
+            return createTickerHelper(type, ProjectTitanCore.TITAN_CORE_BLOCK_ENTITY.get(),
+                    (lvl, pos, st, be) -> SkyTintEffect.observe(pos, st.getValue(CRAFTING)));
+        }
         return createTickerHelper(type, ProjectTitanCore.TITAN_CORE_BLOCK_ENTITY.get(),
                 TitanCoreBlockEntity::tick);
     }

@@ -84,6 +84,14 @@ public class ProjectTitanCore {
             () -> new Block(holyBrickProps()));
     public static final DeferredItem<BlockItem> HOLY_BRICK_TILES_ITEM = ITEMS.registerSimpleBlockItem("holy_brick_tiles", HOLY_BRICK_TILES);
 
+    public static final DeferredBlock<Block> GILDED_HOLY_BRICKS = BLOCKS.register("gilded_holy_bricks",
+            () -> new Block(holyBrickProps()));
+    public static final DeferredItem<BlockItem> GILDED_HOLY_BRICKS_ITEM = ITEMS.registerSimpleBlockItem("gilded_holy_bricks", GILDED_HOLY_BRICKS);
+
+    public static final DeferredBlock<Block> ENGRAVED_HOLY_BRICKS = BLOCKS.register("engraved_holy_bricks",
+            () -> new Block(holyBrickProps()));
+    public static final DeferredItem<BlockItem> ENGRAVED_HOLY_BRICKS_ITEM = ITEMS.registerSimpleBlockItem("engraved_holy_bricks", ENGRAVED_HOLY_BRICKS);
+
     public static final DeferredItem<TitanShardItem> MOTE_OF_THE_TITAN = ITEMS.registerItem("mote_of_the_titan", TitanShardItem::new);
     public static final DeferredItem<TitanShardItem> EMBER_OF_THE_TITAN = ITEMS.registerItem("ember_of_the_titan", TitanShardItem::new);
     public static final DeferredItem<TitanShardItem> SPARK_OF_THE_TITAN = ITEMS.registerItem("spark_of_the_titan", TitanShardItem::new);
@@ -112,6 +120,8 @@ public class ProjectTitanCore {
                         output.accept(CHISELED_HOLY_BRICKS_ITEM.get());
                         output.accept(HOLY_BRICK_PILLAR_ITEM.get());
                         output.accept(HOLY_BRICK_TILES_ITEM.get());
+                        output.accept(GILDED_HOLY_BRICKS_ITEM.get());
+                        output.accept(ENGRAVED_HOLY_BRICKS_ITEM.get());
                         output.accept(MOTE_OF_THE_TITAN.get());
                         output.accept(EMBER_OF_THE_TITAN.get());
                         output.accept(SPARK_OF_THE_TITAN.get());
