@@ -11,7 +11,7 @@
     {"item": "minecraft:netherite_block", "count": 64},
     {"item": "minecraft:netherite_block", "count": 64}
   ],
-  "fluid": {"tag": "c:molten_steel", "amount": 250000},
+  "fluid": {"fluid": "enderio:liquid_sunshine", "amount": 100000},
   "energy_per_tick": 200000000,
   "crafting_time": 4800,
   "result": {"id": "projecttitancore:heart_of_the_titan", "count": 1},

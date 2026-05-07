@@ -11,7 +11,7 @@
     {"item": "minecraft:emerald_block", "count": 64},
     {"item": "minecraft:emerald_block", "count": 64}
   ],
-  "fluid": {"tag": "c:molten_steel", "amount": 50000},
+  "fluid": {"tag": "c:experience", "amount": 72000},
   "energy_per_tick": 15000000,
   "crafting_time": 2400,
   "result": {"id": "projecttitancore:soul_of_the_titan", "count": 1},

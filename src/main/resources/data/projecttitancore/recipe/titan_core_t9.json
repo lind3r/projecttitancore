@@ -11,7 +11,7 @@
     {"item": "minecraft:netherite_block", "count": 64},
     {"item": "minecraft:netherite_block", "count": 64}
   ],
-  "fluid": {"tag": "c:molten_steel", "amount": 100000},
+  "fluid": {"fluid": "enderio:vapor_of_levity", "amount": 86000},
   "energy_per_tick": 60000000,
   "crafting_time": 3000,
   "result": {"id": "projecttitancore:ascendant_shard", "count": 1},

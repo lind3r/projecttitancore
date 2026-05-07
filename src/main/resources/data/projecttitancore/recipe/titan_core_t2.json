@@ -11,7 +11,7 @@
     {"item": "minecraft:iron_block", "count": 64},
     {"item": "minecraft:iron_block", "count": 64}
   ],
-  "fluid": {"fluid": "minecraft:water", "amount": 10000},
+  "fluid": {"fluid": "minecraft:water", "amount": 9000},
   "energy_per_tick": 4000,
   "crafting_time": 600,
   "result": {"id": "projecttitancore:ember_of_the_titan", "count": 1},

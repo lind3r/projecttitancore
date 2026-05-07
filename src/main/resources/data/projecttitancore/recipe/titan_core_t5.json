@@ -11,7 +11,7 @@
     {"item": "minecraft:gold_block", "count": 64},
     {"item": "minecraft:gold_block", "count": 64}
   ],
-  "fluid": {"fluid": "minecraft:lava", "amount": 20000},
+  "fluid": {"tag": "c:molten_gold", "amount": 32000},
   "energy_per_tick": 250000,
   "crafting_time": 1200,
   "result": {"id": "projecttitancore:echo_of_the_titan", "count": 1},
