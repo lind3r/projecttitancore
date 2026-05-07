@@ -2,23 +2,28 @@
 Generate the Titan projection structure data + cumulative preview images.
 
 The Titan Core projects a translucent holographic statue above the crafting
-beam. Each tier crafted unlocks one cumulative section of the silhouette:
+beam. The shard chain has 10 tiers, so the projection grows in 10 cumulative
+horizontal slabs from the plinth (y=1) to the top of the head (y=41). Each
+craft adds one ~4-tall slab; the final tier forms the head and crown.
 
-  Tier 1: plinth, feet, lower legs (knee down)
-  Tier 2: upper legs, hips, gold belt
-  Tier 3: torso (waist + chest), arms, pauldrons
-  Tier 4: head, sword (held forward)
+  Tier  1: plinth, feet, ankles                  (y=1..4)
+  Tier  2: lower shins                           (y=5..8)
+  Tier  3: upper shins, knees                    (y=9..12)
+  Tier  4: lower thighs                          (y=13..16)
+  Tier  5: upper thighs                          (y=17..20)
+  Tier  6: hips, belt; arm + sword bud           (y=21..24)
+  Tier  7: waist                                 (y=25..28)
+  Tier  8: chest, mid arms                       (y=29..32)
+  Tier  9: shoulders, pauldrons, clavicle, neck  (y=33..36)
+  Tier 10: head, eyes, crown                     (y=37..41)
 
 Run: python scripts/gen_titan_structure.py
 
 Outputs:
   src/main/resources/data/projecttitancore/structure/titan.json
-  scripts/preview_titan/tier1.png   - front view, T1 only
-  scripts/preview_titan/tier2.png   - front view, T1+T2
-  scripts/preview_titan/tier3.png   - front view, T1+T2+T3
-  scripts/preview_titan/tier4.png   - front view, full
-  scripts/preview_titan/side.png    - side view, full
-  scripts/preview_titan/top.png     - top view, full
+  scripts/preview_titan/tier{1..10}.png  - front view, cumulative
+  scripts/preview_titan/side.png         - side view, full
+  scripts/preview_titan/top.png          - top view, full
 
 Coordinate system (anchor = top of crafting beam):
   +X = titan's right (sword side)
@@ -27,7 +32,8 @@ Coordinate system (anchor = top of crafting beam):
 
 To tweak proportions: each body part is its own function returning a list of
 (x, y, z, color) tuples. Modify those, re-run, inspect the previews. JSON only
-gets written if previews look right.
+gets written if previews look right. To shift tier boundaries, edit
+TIER_Y_RANGES below.
 """
 
 import json
@@ -79,17 +85,17 @@ def overlay(base, top):
 
 
 # --------------------------------------------------------------------------- #
-# TIER 1 - feet up to knee                                                    #
+# Body parts (geometry only; tier slicing happens later by Y range)           #
 # --------------------------------------------------------------------------- #
 
-def t1_plinth():
-    base = cube((-3, 4), (0, 2), (-3, 4), "ivory")
+def plinth():
+    base = cube((-3, 4), (1, 2), (-3, 4), "ivory")
     # gold corners only - subtle "altar" feel without dominating the silhouette
     corners = [(x, 1, z, "gold") for x in (-3, 3) for z in (-3, 3)]
     return overlay(base, corners)
 
 
-def t1_feet():
+def feet():
     voxels = []
     for x_start in (-3, 1):  # left foot, right foot (1-block gap at x=0)
         voxels += cube((x_start, x_start + 3), (2, 4), (-2, 3), "ivory")
@@ -98,7 +104,7 @@ def t1_feet():
     return voxels
 
 
-def t1_lower_legs():
+def lower_legs():
     voxels = []
     for x_start in (-3, 1):
         voxels += cube((x_start, x_start + 3), (4, 12), (-1, 2), "ivory")
@@ -108,15 +114,7 @@ def t1_lower_legs():
     return voxels
 
 
-def tier1_voxels():
-    return t1_plinth() + t1_feet() + t1_lower_legs()
-
-
-# --------------------------------------------------------------------------- #
-# TIER 2 - upper legs, hips, belt                                             #
-# --------------------------------------------------------------------------- #
-
-def t2_upper_legs():
+def upper_legs():
     voxels = []
     for x_start in (-3, 1):
         voxels += cube((x_start, x_start + 3), (12, 21), (-1, 2), "ivory")
@@ -125,7 +123,7 @@ def t2_upper_legs():
     return voxels
 
 
-def t2_hips_belt():
+def hips_belt():
     voxels = []
     voxels += cube((-3, 4), (21, 23), (-2, 3), "ivory")    # hips
     voxels += cube((-3, 4), (23, 24), (-2, 3), "gold")     # belt
@@ -133,25 +131,17 @@ def t2_hips_belt():
     return voxels
 
 
-def tier2_voxels():
-    return t2_upper_legs() + t2_hips_belt()
-
-
-# --------------------------------------------------------------------------- #
-# TIER 3 - torso, arms, pauldrons                                             #
-# --------------------------------------------------------------------------- #
-
-def t3_waist():
+def waist():
     return cube((-3, 4), (25, 30), (-2, 3), "ivory")
 
 
-def t3_chest():
+def chest():
     voxels = cube((-4, 5), (30, 35), (-2, 3), "ivory")     # broader shoulders
     voxels += cube((-4, 5), (35, 36), (-2, 3), "shadow")   # clavicle seam
     return voxels
 
 
-def t3_arms():
+def arms():
     voxels = []
     # Each arm: 2 wide, 12 tall, 3 deep. Sits flush against hip/belt at hip
     # height, and overlaps the (broader) chest's outer column at chest height -
@@ -168,15 +158,7 @@ def t3_arms():
     return voxels
 
 
-def tier3_voxels():
-    return t3_waist() + t3_chest() + t3_arms()
-
-
-# --------------------------------------------------------------------------- #
-# TIER 4 - head, sword                                                        #
-# --------------------------------------------------------------------------- #
-
-def t4_neck_head():
+def neck_head():
     voxels = []
     voxels += cube((-1, 2), (36, 37), (-1, 2), "ivory")    # neck
     voxels += cube((-2, 3), (37, 42), (-2, 3), "ivory")    # head
@@ -187,7 +169,7 @@ def t4_neck_head():
     return voxels
 
 
-def t4_sword():
+def sword():
     """Held in the right hand at hip height, blade pointing forward (+Z).
 
     Hilt sits one block outboard of the right arm (x=6) at hand height (y=22).
@@ -206,21 +188,54 @@ def t4_sword():
     return voxels
 
 
-def tier4_voxels():
-    return t4_neck_head() + t4_sword()
+def all_body_voxels():
+    """Every voxel in the full statue. Tier slicing operates on this."""
+    return (
+        plinth() + feet() + lower_legs() + upper_legs()
+        + hips_belt() + waist() + chest() + arms()
+        + neck_head() + sword()
+    )
 
 
 # --------------------------------------------------------------------------- #
-# Assembly + JSON output                                                      #
+# Tier slicing                                                                #
 # --------------------------------------------------------------------------- #
+#
+# 10 cumulative horizontal slabs covering y=1..41. Mostly 4 rows per slab;
+# T10 gets 5 to land the entire head as the final reveal. Adjusting these
+# bounds is the right knob for re-pacing the progression - the part functions
+# above describe geometry, not tiers.
 
-TIER_BUILDERS = {
-    1: tier1_voxels,
-    2: tier2_voxels,
-    3: tier3_voxels,
-    4: tier4_voxels,
+TIER_Y_RANGES = {
+    1:  (1, 5),    # plinth, feet, ankles
+    2:  (5, 9),    # lower shins
+    3:  (9, 13),   # upper shins, knees
+    4:  (13, 17),  # lower thighs
+    5:  (17, 21),  # upper thighs
+    6:  (21, 25),  # hips, belt, under-belt; arm + sword bud
+    7:  (25, 29),  # waist
+    8:  (29, 33),  # mid chest, mid arms
+    9:  (33, 37),  # upper chest, pauldrons, clavicle, neck
+    10: (37, 42),  # head: jaw, eyes, crown
 }
 
+
+def slice_by_y(voxels, y_lo, y_hi):
+    """Voxels with y in [y_lo, y_hi)."""
+    return [(x, y, z, c) for (x, y, z, c) in voxels if y_lo <= y < y_hi]
+
+
+def build_tiers():
+    body = all_body_voxels()
+    return {
+        n: slice_by_y(body, y_lo, y_hi)
+        for n, (y_lo, y_hi) in TIER_Y_RANGES.items()
+    }
+
+
+# --------------------------------------------------------------------------- #
+# JSON output                                                                 #
+# --------------------------------------------------------------------------- #
 
 def bucket_by_color(voxels):
     """Group voxels by color so the renderer can build one VertexBuffer per color."""
@@ -242,8 +257,8 @@ def write_json(tiers):
         json.dump(payload, f, separators=(",", ":"))
     print(f"wrote {os.path.relpath(JSON_OUT, ROOT)}")
     for n in sorted(tiers):
-        print(f"  tier {n}: {len(tiers[n])} voxels")
-    print(f"  total: {sum(len(v) for v in tiers.values())} voxels")
+        print(f"  tier {n:>2}: {len(tiers[n]):>4} voxels")
+    print(f"  total : {sum(len(v) for v in tiers.values()):>4} voxels")
 
 
 # --------------------------------------------------------------------------- #
@@ -294,8 +309,11 @@ def _draw_voxel(canvas, w, h, ux, vy, color):
                     canvas[py * w + px] = color
 
 
-def render_view(voxels, view, path):
-    """view: 'front' (XY plane, looking -Z), 'side' (ZY, looking -X), 'top' (XZ, looking -Y)."""
+def render_view(voxels, view, path, fixed_bounds=None):
+    """view: 'front' (XY plane, looking -Z), 'side' (ZY, looking -X), 'top' (XZ, looking -Y).
+
+    fixed_bounds: optional (u_min, u_max, v_min, v_max) so all cumulative previews
+    share an identical canvas - makes the build-up visually comparable."""
     if view == "front":
         u_idx, v_idx, depth_idx = 0, 1, 2
         depth_sign = +1   # +Z is closer to viewer
@@ -306,10 +324,13 @@ def render_view(voxels, view, path):
         u_idx, v_idx, depth_idx = 0, 2, 1
         depth_sign = +1   # +Y is closer
 
-    us = [v[u_idx] for v in voxels]
-    vs = [v[v_idx] for v in voxels]
-    u_min, u_max = min(us) - 1, max(us) + 1
-    v_min, v_max = min(vs) - 1, max(vs) + 1
+    if fixed_bounds is not None:
+        u_min, u_max, v_min, v_max = fixed_bounds
+    else:
+        us = [v[u_idx] for v in voxels]
+        vs = [v[v_idx] for v in voxels]
+        u_min, u_max = min(us) - 1, max(us) + 1
+        v_min, v_max = min(vs) - 1, max(vs) + 1
 
     width = (u_max - u_min + 1) * PIXELS_PER_VOXEL
     height = (v_max - v_min + 1) * PIXELS_PER_VOXEL
@@ -339,14 +360,28 @@ def render_view(voxels, view, path):
 
 def write_previews(tiers):
     os.makedirs(PREVIEW_DIR, exist_ok=True)
+
+    # Compute full silhouette bounds once so every cumulative preview lines up.
+    full = []
+    for n in sorted(tiers):
+        full += tiers[n]
+    xs = [v[0] for v in full]
+    ys = [v[1] for v in full]
+    zs = [v[2] for v in full]
+    front_bounds = (min(xs) - 1, max(xs) + 1, min(ys) - 1, max(ys) + 1)
+    side_bounds  = (min(zs) - 1, max(zs) + 1, min(ys) - 1, max(ys) + 1)
+    top_bounds   = (min(xs) - 1, max(xs) + 1, min(zs) - 1, max(zs) + 1)
+
     cumulative = []
     for n in sorted(tiers):
         cumulative = cumulative + tiers[n]
-        render_view(cumulative, "front", os.path.join(PREVIEW_DIR, f"tier{n}.png"))
+        render_view(cumulative, "front", os.path.join(PREVIEW_DIR, f"tier{n:02d}.png"),
+                    fixed_bounds=front_bounds)
 
-    full = cumulative
-    render_view(full, "side", os.path.join(PREVIEW_DIR, "side.png"))
-    render_view(full, "top",  os.path.join(PREVIEW_DIR, "top.png"))
+    render_view(full, "side", os.path.join(PREVIEW_DIR, "side.png"),
+                fixed_bounds=side_bounds)
+    render_view(full, "top",  os.path.join(PREVIEW_DIR, "top.png"),
+                fixed_bounds=top_bounds)
 
 
 # --------------------------------------------------------------------------- #
@@ -354,6 +389,6 @@ def write_previews(tiers):
 # --------------------------------------------------------------------------- #
 
 if __name__ == "__main__":
-    tiers = {n: builder() for n, builder in TIER_BUILDERS.items()}
+    tiers = build_tiers()
     write_json(tiers)
     write_previews(tiers)
