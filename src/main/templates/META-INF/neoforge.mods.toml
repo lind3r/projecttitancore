@@ -81,10 +81,10 @@ Project Titan Core - Description WIP
 
 # Here's another dependency
 [[dependencies.${mod_id}]]
-    modId="emi"
+    modId="jei"
     type="optional"
-    versionRange="[1.1.0,)"
-    ordering="NONE"
+    versionRange="[19.0.0,)"
+    ordering="AFTER"
     side="CLIENT"
 
 [[dependencies.${mod_id}]]
