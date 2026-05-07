@@ -27,9 +27,9 @@ public class TitanCoreRenderer implements BlockEntityRenderer<TitanCoreBlockEnti
     private static final int BEAM_COLOR = 0xFFE054;
     private static final float INNER_RADIUS = 0.30f;
     private static final float OUTER_RADIUS = 0.44f;
-    /** Idle beam is rendered at ~30% the radii of the active beam, only while the projection is visible. */
-    private static final float IDLE_INNER_RADIUS = 0.08f;
-    private static final float IDLE_OUTER_RADIUS = 0.16f;
+    /** Idle beam, only while the projection is visible. ~50% the radii of the active beam. */
+    private static final float IDLE_INNER_RADIUS = 0.16f;
+    private static final float IDLE_OUTER_RADIUS = 0.32f;
 
     /** Degrees per game tick. ~0.4 deg/tick = full rotation in ~15 seconds. */
     private static final float ROTATION_SPEED_DEG_PER_TICK = 0.4f;
@@ -76,7 +76,11 @@ public class TitanCoreRenderer implements BlockEntityRenderer<TitanCoreBlockEnti
         } else if (projectionShown) {
             // Idle beam only renders when the projection is visible — otherwise the beam would
             // point at empty air, which reads as broken rather than dormant.
-            renderBeamPass(pose, buffers, partialTick, gameTime, 0f, IDLE_INNER_RADIUS, IDLE_OUTER_RADIUS);
+            // Two passes (yaw 0° + 45°) — the beam quad cross-section is square, and a single
+            // pass reads as a square at any radius. Crossing two squares produces an 8-pointed
+            // star that reads as round/cylindrical.
+            renderBeamPass(pose, buffers, partialTick, gameTime, 0f,  IDLE_INNER_RADIUS, IDLE_OUTER_RADIUS);
+            renderBeamPass(pose, buffers, partialTick, gameTime, 45f, IDLE_INNER_RADIUS, IDLE_OUTER_RADIUS);
         }
 
         if (projectionShown) {

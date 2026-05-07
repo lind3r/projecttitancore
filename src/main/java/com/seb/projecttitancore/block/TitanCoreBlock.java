@@ -4,12 +4,14 @@ import com.mojang.serialization.MapCodec;
 import com.seb.projecttitancore.ProjectTitanCore;
 import com.seb.projecttitancore.blockentity.TitanCoreBlockEntity;
 import com.seb.projecttitancore.client.SkyTintEffect;
+import com.seb.projecttitancore.client.TitanCoreSoundEffect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -47,6 +49,22 @@ public class TitanCoreBlock extends BaseEntityBlock {
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
+    }
+
+    /** Crafting light is fixed at 15 from blockstate alone; idle light depends on BE.titanTier and so needs position. */
+    @Override
+    public boolean hasDynamicLightEmission(BlockState state) {
+        return !state.getValue(CRAFTING);
+    }
+
+    /** 15 while crafting, 8 while the projection is visible (titanTier > 0), 0 otherwise. */
+    @Override
+    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
+        if (state.getValue(CRAFTING)) return 15;
+        if (level.getBlockEntity(pos) instanceof TitanCoreBlockEntity be && be.titanTier > 0) {
+            return 8;
+        }
+        return 0;
     }
 
     @Override
@@ -97,11 +115,16 @@ public class TitanCoreBlock extends BaseEntityBlock {
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide) {
-            // Client-side ticker only observes the CRAFTING blockstate to drive the holy sky tint.
-            // Lambda body — and the SkyTintEffect class — only loads on the client because this
-            // branch is never entered on the dedicated server.
+            // Client-side ticker observes the CRAFTING blockstate + BE.titanTier to drive
+            // the holy sky tint and the ambient sound loops. Both client classes are only
+            // loaded on the client because this branch is never entered on the dedicated server.
             return createTickerHelper(type, ProjectTitanCore.TITAN_CORE_BLOCK_ENTITY.get(),
-                    (lvl, pos, st, be) -> SkyTintEffect.observe(pos, st.getValue(CRAFTING)));
+                    (lvl, pos, st, be) -> {
+                        boolean crafting = st.getValue(CRAFTING);
+                        boolean projectionShown = be.titanTier > 0;
+                        SkyTintEffect.observe(pos, crafting);
+                        TitanCoreSoundEffect.observe(pos, crafting, projectionShown);
+                    });
         }
         return createTickerHelper(type, ProjectTitanCore.TITAN_CORE_BLOCK_ENTITY.get(),
                 TitanCoreBlockEntity::tick);

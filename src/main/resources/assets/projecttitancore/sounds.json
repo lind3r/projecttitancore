@@ -1,0 +1,14 @@
+{
+  "titan_core_idle": {
+    "subtitle": "subtitles.projecttitancore.titan_core_idle",
+    "sounds": [
+      { "name": "projecttitancore:titan_core_idle", "stream": false, "attenuation_distance": 5 }
+    ]
+  },
+  "titan_core_crafting": {
+    "subtitle": "subtitles.projecttitancore.titan_core_crafting",
+    "sounds": [
+      { "name": "projecttitancore:titan_core_crafting", "stream": false, "attenuation_distance": 5 }
+    ]
+  }
+}

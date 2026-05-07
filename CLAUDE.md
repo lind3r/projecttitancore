@@ -95,6 +95,17 @@ Project Titan Core uses a **holy** palette — ivory marble base with gold accen
 
 **Titan projection structure** — `scripts/gen_titan_structure.py`. Builds the holographic-statue voxel data emitted as `data/projecttitancore/structure/titan.json` plus cumulative front-elevation previews in `scripts/preview_titan/` (gitignored). Body is split into part-functions (`t1_plinth`, `t1_feet`, `t1_lower_legs`, `t2_upper_legs`, `t2_hips_belt`, `t3_waist`, `t3_chest`, `t3_arms`, `t4_neck_head`, `t4_sword`) that each return `(x, y, z, color)` voxel tuples; `TIER_BUILDERS` aggregates them per tier. Coordinate frame: +X = titan's right (sword side), +Y = up, +Z = forward; origin = top of crafting beam (`y = corePos.y + BEAM_RENDER_HEIGHT`). Three colors only — `ivory`, `shadow`, `gold`, matching the holy palette. To tweak proportions: edit a part function, re-run, inspect the previews, then `deployToInstance`.
 
+## Sound Generation
+
+**Titan Core ambient loops** — `scripts/gen_holy_sounds.py`. Pure-stdlib procedural synth (no numpy) that writes two short loopable mono OGGs to `src/main/resources/assets/projecttitancore/sounds/`:
+
+- `titan_core_idle.ogg` — subtle organ-pad hum (root + fifth + octave, detuned voices, slow tremolo). ~4.0s, played whenever a Core's projection is visible (`titanTier > 0`).
+- `titan_core_crafting.ogg` — drone + periodic bell chimes with inharmonic partials. ~2.0s, layered on top of the idle hum while `CRAFTING=true`.
+
+The script generates WAVs first (intermediate output to `scripts/sounds_wav/`, gitignored) and shells out to `ffmpeg -c:a libvorbis` for the OGG step. Minecraft requires OGG Vorbis, so ffmpeg is required — install on Windows with `winget install Gyan.FFmpeg`. To retune a clip: edit the `voices` / `bell_partials` tables or duration in `synth_idle` / `synth_crafting` and re-run. Both clips are designed for clean loops (integer-cycle alignment + crossfade tail), so don't break that invariant when changing duration.
+
+Playback wiring: `Sounds` are registered as `SoundEvent` holders in `ProjectTitanCore.java`; `client/TitanCoreSoundEffect.observe(pos, crafting, projectionShown)` is called from the client-side ticker (`TitanCoreBlock.getTicker`) and manages a `TitanCoreLoop` (`AbstractTickableSoundInstance`) per Core per channel. Sounds stop themselves via a staleness timeout when the BE stops being observed (chunk unload, dimension change).
+
 ## Diagnosing Crashes
 
 Primary log: `C:\Users\lind3\AppData\Roaming\PrismLauncher\instances\projecttitan\minecraft\logs\latest.log`
@@ -154,6 +165,10 @@ If we later add another carving group (e.g. holy_marble), repeat the same patter
 A craft completion at the Titan Core should feel like the world reacts. Effects are split into **per-craft** (every successful craft, any tier) and **per-tier-up** (escalating world changes that compound).
 
 **Implemented — holy sky tint while crafting.** While any nearby loaded Titan Core has `TitanCoreBlock.CRAFTING=true`, the sky/fog biases toward holy gold (`#FFE054`); when no Core is crafting it decays to nothing over ~5s. The slow decay deliberately absorbs rapid start/stop flicker (e.g. recipe oscillating because input RF/t is borderline) without strobing the sky. No network packet — the BE's blockstate is already client-synced, so a client-side ticker registered in `TitanCoreBlock.getTicker` reports each loaded Core's CRAFTING state every tick into `SkyTintEffect.observe(pos, crafting)`. `SkyTintEffect.onComputeFogColor` (subscribed in `ClientEvents`) biases `ViewportEvent.ComputeFogColor` against a smoothed `currentIntensity` that ramps over `RISE_TICKS` (10 = ~0.5s rise) and decays over `DECAY_TICKS` (100 = ~5s). When the BE unloads it stops ticking, the observation goes stale within one tick, and the tint decays naturally. Tweak constants at the top of `SkyTintEffect` to retune.
+
+**Implemented — block light emission tracks state.** The Titan Core block emits light 15 while `CRAFTING=true`, 8 while idle but with the projection visible (`titanTier > 0`), and 0 when freshly placed and never crafted. The tier-aware idle glow needs position context (BE is the source of truth for `titanTier`), so `TitanCoreBlock` overrides NeoForge's `IBlockExtension#getLightEmission(state, level, pos)` and returns `true` from `hasDynamicLightEmission` for non-CRAFTING states. When a craft completes, the CRAFTING blockstate transitions true→false in the same tick the BE bumps `titanTier` from 0→1, and the lighting engine's recompute on that blockstate change picks up the new emission of 8.
+
+**Implemented — ambient sound loops.** Two looping clips, gated to mirror the visual layers exactly: `titan_core_idle.ogg` plays whenever the projection is visible; `titan_core_crafting.ogg` layers on top while crafting. Both are observed once per client tick via the same `TitanCoreBlock.getTicker` hook that drives the sky tint, then handed to `TitanCoreSoundEffect.observe(pos, crafting, projectionShown)`. The manager keeps one `TitanCoreLoop` per Core per channel; loops self-stop after a short staleness window when their BE stops ticking. To retune: edit volumes at the top of `TitanCoreSoundEffect`, or regenerate the OGGs via `scripts/gen_holy_sounds.py` (see "Sound Generation" above).
 
 **Planned — per-tier-up world response.** The brainstorm (2026-05-07) proposes the world growing progressively hostile / sublime as tiers advance, with each tier *stacking* on previous. Doable inside this mod plus already-installed pack mods — no new deps required. Sketch:
 

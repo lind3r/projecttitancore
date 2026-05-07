@@ -17,5 +17,7 @@
   "item.projecttitancore.voice_of_the_titan": "Voice of the Titan",
   "item.projecttitancore.soul_of_the_titan": "Soul of the Titan",
   "item.projecttitancore.ascendant_shard": "Ascendant Shard",
-  "item.projecttitancore.heart_of_the_titan": "Heart of the Titan"
+  "item.projecttitancore.heart_of_the_titan": "Heart of the Titan",
+  "subtitles.projecttitancore.titan_core_idle": "Titan Core hums",
+  "subtitles.projecttitancore.titan_core_crafting": "Titan Core resonates"
 }

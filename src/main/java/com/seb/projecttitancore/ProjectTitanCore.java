@@ -9,6 +9,7 @@ import com.seb.projecttitancore.recipe.TitanCoreRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -45,6 +46,16 @@ public class ProjectTitanCore {
             DeferredRegister.create(Registries.RECIPE_TYPE, MODID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =
             DeferredRegister.create(Registries.RECIPE_SERIALIZER, MODID);
+    public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
+            DeferredRegister.create(Registries.SOUND_EVENT, MODID);
+
+    private static DeferredHolder<SoundEvent, SoundEvent> registerSound(String name) {
+        return SOUND_EVENTS.register(name,
+                () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MODID, name)));
+    }
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SOUND_TITAN_CORE_IDLE = registerSound("titan_core_idle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> SOUND_TITAN_CORE_CRAFTING = registerSound("titan_core_crafting");
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<TitanCoreRecipe>> TITAN_CORE_RECIPE_TYPE =
             RECIPE_TYPES.register("titan_core", () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(MODID, "titan_core")));
@@ -143,6 +154,7 @@ public class ProjectTitanCore {
         CREATIVE_MODE_TABS.register(modEventBus);
         RECIPE_TYPES.register(modEventBus);
         RECIPE_SERIALIZERS.register(modEventBus);
+        SOUND_EVENTS.register(modEventBus);
         modEventBus.addListener(ProjectTitanCore::registerCapabilities);
     }
 

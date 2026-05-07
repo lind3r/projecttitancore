@@ -45,6 +45,9 @@ notes/
 scripts/preview_titan_core/
 scripts/preview_titan/
 
+### Sound-generator intermediate WAVs (final OGGs are tracked) ###
+scripts/sounds_wav/
+
 ### Minecraft Modding ###
 run/
 !**/src/**/run/
