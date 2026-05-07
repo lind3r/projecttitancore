@@ -21,17 +21,22 @@ import org.joml.Matrix4f;
 import java.util.List;
 
 public class TitanCoreRenderer implements BlockEntityRenderer<TitanCoreBlockEntity> {
+    // Bundled instead of vanilla beacon_beam.png because something in the modpack
+    // (a mod shipping `assets/minecraft/textures/entity/beacon_beam.png` of its own)
+    // overrides the vanilla beam with a teal-tinted variant — that biases every
+    // tint we send toward teal. Our own pure-white texture keeps tint multiplication
+    // clean. Source: scripts/gen_beam_texture.py.
     private static final ResourceLocation BEAM_TEXTURE =
-            ResourceLocation.withDefaultNamespace("textures/entity/beacon_beam.png");
+            ResourceLocation.fromNamespaceAndPath("projecttitancore", "textures/entity/titan_beam.png");
     private static final int BEAM_HEIGHT = TitanCoreBlockEntity.BEAM_RENDER_HEIGHT;
-    // Beam colours are shifted away from the holy palette's GOLDHI/HALO_A constants
-    // because the beacon shader darkens the tint along the beam's vertical stripes;
-    // shades of (255, 224, 84) land in olive territory at ~50% brightness. Bumping
-    // red and trimming green keeps the darkened variants warm gold instead of green.
-    /** Crafting beam — warm holy gold. */
-    private static final int BEAM_COLOR_ACTIVE = 0xFFB84A;
-    /** Idle beam — pale warm halo, matches the idle sphere so the visual reads as one continuous glow. */
-    private static final int BEAM_COLOR_IDLE = 0xFFE0AC;
+    // Tints multiply against the bundled pure-white beam texture, so the player sees
+    // exactly the RGB values declared here. Both colours sit close to white with just
+    // a warm bias — the visual is "white beam with a gold cast" rather than a saturated
+    // gold cylinder, which would have read olive against the modpack's lighting.
+    /** Crafting beam — almost white with a subtle gold cast. */
+    private static final int BEAM_COLOR_ACTIVE = 0xFFF0CC;
+    /** Idle beam — even paler, almost pure white with a faint warm whisper. */
+    private static final int BEAM_COLOR_IDLE = 0xFFF8E8;
     private static final float INNER_RADIUS = 0.30f;
     private static final float OUTER_RADIUS = 0.44f;
     /** Idle beam, only while the projection is visible. ~50% the radii of the active beam. */
@@ -99,12 +104,12 @@ public class TitanCoreRenderer implements BlockEntityRenderer<TitanCoreBlockEnti
     private static final int SPHERE_LON = 16;
     private static final int SPHERE_LAT = 10;
 
-    // Sphere colours intentionally match BEAM_COLOR_IDLE / BEAM_COLOR_ACTIVE so the
-    // beam reads as light emerging from the sphere. Same warm-gold shift as the beams
-    // (away from green-leaning halo/goldhi) — additive blending exaggerates green-tint
-    // even more than the beacon shader does.
-    private static final int COLOR_IDLE_HALO = 0xFFE0AC;
-    private static final int COLOR_GOLD_HIGHLIGHT = 0xFFB84A;
+    // Sphere colours match BEAM_COLOR_IDLE / BEAM_COLOR_ACTIVE so the beam reads as
+    // light emerging from the sphere. Sphere uses additive blending which pushes
+    // overlapping layers toward white anyway, which is exactly what we want here.
+    // Keep these in lockstep with BEAM_COLOR_*.
+    private static final int COLOR_IDLE_HALO = 0xFFF8E8;
+    private static final int COLOR_GOLD_HIGHLIGHT = 0xFFF0CC;
 
     public TitanCoreRenderer(BlockEntityRendererProvider.Context ctx) {}
 
