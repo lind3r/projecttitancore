@@ -46,7 +46,11 @@ authors="lind3r"
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-Project Titan Core - Description WIP
+Project Titan Core is the anchor mod of the Project Titan modpack — a divine-themed progression mod built around the Titan Core, a multi-input crafting block that consumes items, Forge Energy and fluid to forge a 10-tier chain of Titan Shards (Mote → Heart of the Titan). Each shard feeds the next tier's recipe; the chain is the spine of the pack's progression.
+
+A holographic Titan statue rises above the block as you climb tiers, the sky bends holy gold while a Core is crafting, and the chain culminates in the Titan Trial — a Cataclysm-powered boss gauntlet that drops the Crown of the Titan as the modpack-completion trophy.
+
+Integrates with Apotheosis (the shard chain auto-advances Apothic World Tiers), FTB Quests (per-tier shard quests), Gateways to Eternity (the trial arena), and Chisel Modern (the Holy Bricks building set).
 '''
 
 # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.
