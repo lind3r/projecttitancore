@@ -14,16 +14,14 @@ A NeoForge mod for Minecraft 1.21.1 centred on the **Titan Core** — a multi-in
 - **Custom recipe type** driven by JSON: 10 tiered chain recipes (`titan_core_t1` … `titan_core_t10`) plus a low-cost test recipe.
 - **Titan Shards** in 10 tiers (`mote_of_the_titan` … `heart_of_the_titan`); each tier consumes the previous shard plus 8 bulk ingredients and a tier-appropriate fluid.
 - **Crafting beam** rendered above an active core, with emitted light at full intensity while crafting.
-- **Holographic Titan projection** above the beam — translucent voxel statue that grows as tiers are completed (currently 4 anatomy stages, expanding to 10).
+- **Holographic Titan projection** above the beam — translucent voxel statue that grows as tiers are completed, in 10 cumulative anatomy slabs (plinth/feet → crowned head, one per tier).
 - **Holy sky tint** while any nearby Core is crafting — fog/sky biases toward holy gold, decays smoothly when crafting stops.
 - **Holy bricks** building set with Chisel Modern carving-group integration.
 - **Holy** visual theme — ivory marble + gold, with halo and sunburst motifs.
 
 ## Planned
 
-- FTB Quests integration: detecting a shard in inventory auto-completes the matching tier's quest.
 - Per-tier-up world response (mob HP scaling, blood moons, gateway tears, etc.) — design sketched in `CLAUDE.md`.
-- Splitting the Titan projection from 4 anatomy stages into 10, one per tier.
 
 ## Building
 
