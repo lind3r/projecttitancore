@@ -18,10 +18,13 @@
   "item.projecttitancore.soul_of_the_titan": "Soul of the Titan",
   "item.projecttitancore.ascendant_shard": "Ascendant Shard",
   "item.projecttitancore.heart_of_the_titan": "Heart of the Titan",
+  "item.projecttitancore.crown_of_the_titan": "Crown of the Titan",
+  "tooltip.projecttitancore.crown_of_the_titan_1": "Apotheosis Achieved",
+  "tooltip.projecttitancore.crown_of_the_titan_2": "Forged from the trial's wake — proof the Titan acknowledges you.",
   "subtitles.projecttitancore.titan_core_idle": "Titan Core hums",
   "subtitles.projecttitancore.titan_core_crafting": "Titan Core resonates",
   "projecttitancore.titan_trial": "Project Titan",
-  "tooltip.projecttitancore.titan_trial_reward_placeholder": "Placeholder reward — bosses still drop their own loot",
+  "tooltip.projecttitancore.titan_trial_reward": "Awarded only to those who survive the Titan's gauntlet.",
   "tooltip.projecttitancore.titan_trial_warning_1": "⚠ DEVASTATION GUARANTEED",
   "tooltip.projecttitancore.titan_trial_warning_2": "Open only in a dedicated arena, far from your base."
 }

@@ -58,10 +58,10 @@
         {
             "type": "gateways:stack",
             "stack": {
-                "id": "minecraft:gold_ingot",
+                "id": "projecttitancore:crown_of_the_titan",
                 "count": 1
             },
-            "desc": "tooltip.projecttitancore.titan_trial_reward_placeholder"
+            "desc": "tooltip.projecttitancore.titan_trial_reward"
         }
     ]
 }

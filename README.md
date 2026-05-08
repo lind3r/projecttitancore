@@ -19,10 +19,6 @@ A NeoForge mod for Minecraft 1.21.1 centred on the **Titan Core** — a multi-in
 - **Holy bricks** building set with Chisel Modern carving-group integration.
 - **Holy** visual theme — ivory marble + gold, with halo and sunburst motifs.
 
-## Planned
-
-- Per-tier-up world response (mob HP scaling, blood moons, gateway tears, etc.) — design sketched in `CLAUDE.md`.
-
 ## Building
 
 Run from the repo root:

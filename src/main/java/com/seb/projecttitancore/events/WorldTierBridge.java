@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Bridges Titan Shard FTB Quest completion to Apotheosis' WorldTier system, so the player's
  * Apothic tier (Haven → Pinnacle) advances automatically and non-optionally as they progress
- * the shard quest chain. Pinnacle lands at T8 Soul so Mythic loot is in hand for Cronos at T10.
+ * the shard quest chain. Pinnacle lands at T8 Soul so Mythic loot is in hand for the Titan Trial at T10.
  *
  * <p>Mapping is data-driven — see {@code data/projecttitancore/world_tier_quests.json}.
  * Reload-safe; updates pick up on {@code /reload}.

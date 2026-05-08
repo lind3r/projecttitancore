@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.seb.projecttitancore.block.TitanCoreBlock;
 import com.seb.projecttitancore.blockentity.TitanCoreBlockEntity;
 import com.seb.projecttitancore.events.WorldTierBridge;
+import com.seb.projecttitancore.item.TitanRelicItem;
 import com.seb.projecttitancore.item.TitanShardItem;
 import com.seb.projecttitancore.menu.TitanCoreMenu;
 import com.seb.projecttitancore.recipe.TitanCoreRecipe;
@@ -16,6 +17,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
@@ -119,6 +121,13 @@ public class ProjectTitanCore {
     public static final DeferredItem<TitanShardItem> ASCENDANT_SHARD = ITEMS.registerItem("ascendant_shard", TitanShardItem::new);
     public static final DeferredItem<TitanShardItem> HEART_OF_THE_TITAN = ITEMS.registerItem("heart_of_the_titan", TitanShardItem::new);
 
+    // Modpack-completion trophy. Dropped by the Titan Trial gateway; picking it up
+    // closes out the final FTB Quests entry. Epic rarity → light-purple name; the
+    // appendHoverText hook adds the holy flair lines.
+    public static final DeferredItem<TitanRelicItem> CROWN_OF_THE_TITAN = ITEMS.registerItem(
+            "crown_of_the_titan",
+            props -> new TitanRelicItem(props.rarity(Rarity.EPIC).fireResistant(), "crown_of_the_titan"));
+
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TitanCoreBlockEntity>> TITAN_CORE_BLOCK_ENTITY =
             BLOCK_ENTITY_TYPES.register("titan_core", () -> BlockEntityType.Builder.of(TitanCoreBlockEntity::new, TITAN_CORE_BLOCK.get()).build(null));
 
@@ -148,6 +157,7 @@ public class ProjectTitanCore {
                         output.accept(SOUL_OF_THE_TITAN.get());
                         output.accept(ASCENDANT_SHARD.get());
                         output.accept(HEART_OF_THE_TITAN.get());
+                        output.accept(CROWN_OF_THE_TITAN.get());
                     })
                     .build());
 
