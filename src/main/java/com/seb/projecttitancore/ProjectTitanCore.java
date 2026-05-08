@@ -3,6 +3,7 @@ package com.seb.projecttitancore;
 import com.mojang.logging.LogUtils;
 import com.seb.projecttitancore.block.TitanCoreBlock;
 import com.seb.projecttitancore.blockentity.TitanCoreBlockEntity;
+import com.seb.projecttitancore.events.WorldTierBridge;
 import com.seb.projecttitancore.item.TitanShardItem;
 import com.seb.projecttitancore.menu.TitanCoreMenu;
 import com.seb.projecttitancore.recipe.TitanCoreRecipe;
@@ -160,6 +161,7 @@ public class ProjectTitanCore {
         RECIPE_SERIALIZERS.register(modEventBus);
         SOUND_EVENTS.register(modEventBus);
         modEventBus.addListener(ProjectTitanCore::registerCapabilities);
+        WorldTierBridge.registerArchitecturyEvents();
     }
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {

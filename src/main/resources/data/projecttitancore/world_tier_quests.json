@@ -1,0 +1,8 @@
+{
+  "_comment": "FTB quest UUID -> Apothic World Tier mapping (read by events/WorldTierBridge.java). Reloadable via /reload. Verify these UUIDs against config/ftbquests/quests/chapters/the_titan_core.snbt before each modpack release — quest IDs can drift on questbook edits.",
+  "1FCD148E2DA620F0": "haven",
+  "2804065C0AD6C566": "frontier",
+  "4A1B2C3D4E5F6071": "ascent",
+  "6A1B2C3D4E5F6071": "summit",
+  "1A6D32ADD93267FB": "pinnacle"
+}

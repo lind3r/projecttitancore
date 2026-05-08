@@ -36,6 +36,16 @@ repositories {
         url "https://maven.blamejared.com/"
         content { includeGroup "mezz.jei" }
     }
+    maven {
+        // CurseMaven — proxy for any CurseForge mod by project/file ID.
+        url "https://cursemaven.com"
+        content { includeGroup "curse.maven" }
+    }
+    maven {
+        // Architectury API — used transitively by FTB Quests (event types live here).
+        url "https://maven.architectury.dev/"
+        content { includeGroup "dev.architectury" }
+    }
 }
 
 base {
@@ -129,6 +139,12 @@ dependencies {
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
     localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+
+    // Apotheosis + FTB Quests are required runtime deps in the modpack but compileOnly here.
+    // Verified at runtime via deployToInstance into the Prism dev instance, not via runClient.
+    compileOnly "curse.maven:apotheosis-313970:7703848"   // Apotheosis 1.21.1-8.5.2
+    compileOnly "curse.maven:ftb-quests-289412:7878289"   // FTB Quests NeoForge 2101.1.24
+    compileOnly "dev.architectury:architectury-neoforge:13.0.8"  // FTB Quests' event types live here
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
