@@ -1,17 +1,17 @@
 {
   "type": "projecttitancore:titan_core",
   "inputs": [
-    {"item": "projecttitancore:holy_bricks", "count": 64},
-    {"item": "projecttitancore:holy_bricks", "count": 64},
-    {"item": "projecttitancore:holy_bricks", "count": 64},
-    {"item": "projecttitancore:holy_bricks", "count": 64},
-    {"item": "projecttitancore:holy_bricks", "count": 64},
-    {"item": "projecttitancore:holy_bricks", "count": 64},
-    {"item": "projecttitancore:holy_bricks", "count": 64},
-    {"item": "projecttitancore:holy_bricks", "count": 64},
-    {"item": "projecttitancore:holy_bricks", "count": 64}
+    {"item": "minecraft:iron_block", "count": 1},
+    {"item": "minecraft:diamond", "count": 1},
+    {"item": "minecraft:iron_block", "count": 1},
+    {"item": "minecraft:diamond", "count": 1},
+    {"item": "minecraft:iron_block", "count": 1},
+    {"item": "minecraft:diamond", "count": 1},
+    {"item": "minecraft:iron_block", "count": 1},
+    {"item": "minecraft:diamond", "count": 1},
+    {"item": "minecraft:iron_block", "count": 1}
   ],
-  "fluid": {"fluid": "minecraft:water", "amount": 4000},
+  "fluid": {"fluid": "minecraft:water", "amount": 10000},
   "energy_per_tick": 1000,
   "crafting_time": 400,
   "result": {"id": "projecttitancore:mote_of_the_titan", "count": 1},

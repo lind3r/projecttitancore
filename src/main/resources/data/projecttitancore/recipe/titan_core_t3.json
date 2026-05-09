@@ -1,17 +1,17 @@
 {
   "type": "projecttitancore:titan_core",
   "inputs": [
-    {"item": "minecraft:iron_block", "count": 64},
-    {"item": "minecraft:iron_block", "count": 64},
-    {"item": "minecraft:iron_block", "count": 64},
-    {"item": "minecraft:iron_block", "count": 64},
-    {"item": "projecttitancore:ember_of_the_titan", "count": 64},
-    {"item": "minecraft:iron_block", "count": 64},
-    {"item": "minecraft:iron_block", "count": 64},
-    {"item": "minecraft:iron_block", "count": 64},
-    {"item": "minecraft:iron_block", "count": 64}
+    {"item": "minecraft:iron_block", "count": 16},
+    {"item": "minecraft:diamond_block", "count": 4},
+    {"item": "minecraft:iron_block", "count": 16},
+    {"item": "mekanism:block_tin", "count": 4},
+    {"item": "projecttitancore:ember_of_the_titan", "count": 1},
+    {"item": "mekanism:block_tin", "count": 4},
+    {"item": "minecraft:iron_block", "count": 16},
+    {"item": "minecraft:gold_block", "count": 4},
+    {"item": "minecraft:iron_block", "count": 16}
   ],
-  "fluid": {"fluid": "minecraft:lava", "amount": 15000},
+  "fluid": {"fluid": "minecraft:lava", "amount": 30000},
   "energy_per_tick": 16000,
   "crafting_time": 800,
   "result": {"id": "projecttitancore:spark_of_the_titan", "count": 1},

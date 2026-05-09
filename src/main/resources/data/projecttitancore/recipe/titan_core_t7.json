@@ -1,17 +1,17 @@
 {
   "type": "projecttitancore:titan_core",
   "inputs": [
-    {"item": "minecraft:diamond_block", "count": 64},
-    {"item": "minecraft:diamond_block", "count": 64},
-    {"item": "minecraft:diamond_block", "count": 64},
-    {"item": "minecraft:diamond_block", "count": 64},
-    {"item": "projecttitancore:will_of_the_titan", "count": 64},
-    {"item": "minecraft:diamond_block", "count": 64},
-    {"item": "minecraft:diamond_block", "count": 64},
-    {"item": "minecraft:diamond_block", "count": 64},
-    {"item": "minecraft:diamond_block", "count": 64}
+    {"item": "minecraft:iron_block", "count": 64},
+    {"item": "minecraft:diamond_block", "count": 48},
+    {"item": "minecraft:iron_block", "count": 64},
+    {"item": "mekanism:block_steel", "count": 48},
+    {"item": "projecttitancore:will_of_the_titan", "count": 1},
+    {"item": "mekanism:block_steel", "count": 48},
+    {"item": "minecraft:iron_block", "count": 64},
+    {"item": "oritech:plastic_block", "count": 48},
+    {"item": "minecraft:iron_block", "count": 64}
   ],
-  "fluid": {"tag": "c:molten_steel", "amount": 58000},
+  "fluid": {"fluid": "oritech:still_fuel", "amount": 70000},
   "energy_per_tick": 4000000,
   "crafting_time": 1800,
   "result": {"id": "projecttitancore:voice_of_the_titan", "count": 1},

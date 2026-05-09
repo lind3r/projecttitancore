@@ -1,17 +1,17 @@
 {
   "type": "projecttitancore:titan_core",
   "inputs": [
-    {"item": "minecraft:diamond_block", "count": 64},
-    {"item": "minecraft:diamond_block", "count": 64},
-    {"item": "minecraft:diamond_block", "count": 64},
-    {"item": "minecraft:diamond_block", "count": 64},
-    {"item": "projecttitancore:echo_of_the_titan", "count": 64},
-    {"item": "minecraft:diamond_block", "count": 64},
-    {"item": "minecraft:diamond_block", "count": 64},
-    {"item": "minecraft:diamond_block", "count": 64},
-    {"item": "minecraft:diamond_block", "count": 64}
+    {"item": "minecraft:iron_block", "count": 64},
+    {"item": "minecraft:diamond_block", "count": 32},
+    {"item": "minecraft:iron_block", "count": 64},
+    {"item": "create:brass_block", "count": 32},
+    {"item": "projecttitancore:echo_of_the_titan", "count": 1},
+    {"item": "create:brass_block", "count": 32},
+    {"item": "minecraft:iron_block", "count": 64},
+    {"item": "oritech:adamant_block", "count": 32},
+    {"item": "minecraft:iron_block", "count": 64}
   ],
-  "fluid": {"tag": "c:honey", "amount": 45000},
+  "fluid": {"fluid": "oritech:still_silicon_wash", "amount": 60000},
   "energy_per_tick": 1000000,
   "crafting_time": 1500,
   "result": {"id": "projecttitancore:will_of_the_titan", "count": 1},

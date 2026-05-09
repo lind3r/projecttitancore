@@ -1,17 +1,17 @@
 {
   "type": "projecttitancore:titan_core",
   "inputs": [
-    {"item": "minecraft:gold_block", "count": 64},
-    {"item": "minecraft:gold_block", "count": 64},
-    {"item": "minecraft:gold_block", "count": 64},
-    {"item": "minecraft:gold_block", "count": 64},
-    {"item": "projecttitancore:pulse_of_the_titan", "count": 64},
-    {"item": "minecraft:gold_block", "count": 64},
-    {"item": "minecraft:gold_block", "count": 64},
-    {"item": "minecraft:gold_block", "count": 64},
-    {"item": "minecraft:gold_block", "count": 64}
+    {"item": "minecraft:iron_block", "count": 48},
+    {"item": "minecraft:diamond_block", "count": 16},
+    {"item": "minecraft:iron_block", "count": 48},
+    {"item": "mekanism:block_bronze", "count": 16},
+    {"item": "projecttitancore:pulse_of_the_titan", "count": 1},
+    {"item": "mekanism:block_bronze", "count": 16},
+    {"item": "minecraft:iron_block", "count": 48},
+    {"item": "oritech:nickel_block", "count": 16},
+    {"item": "minecraft:iron_block", "count": 48}
   ],
-  "fluid": {"tag": "c:molten_gold", "amount": 32000},
+  "fluid": {"fluid": "mob_grinding_utils:fluid_xp", "amount": 50000},
   "energy_per_tick": 250000,
   "crafting_time": 1200,
   "result": {"id": "projecttitancore:echo_of_the_titan", "count": 1},

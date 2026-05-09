@@ -1,17 +1,17 @@
 {
   "type": "projecttitancore:titan_core",
   "inputs": [
-    {"item": "minecraft:emerald_block", "count": 64},
-    {"item": "minecraft:emerald_block", "count": 64},
-    {"item": "minecraft:emerald_block", "count": 64},
-    {"item": "minecraft:emerald_block", "count": 64},
-    {"item": "projecttitancore:voice_of_the_titan", "count": 64},
-    {"item": "minecraft:emerald_block", "count": 64},
-    {"item": "minecraft:emerald_block", "count": 64},
-    {"item": "minecraft:emerald_block", "count": 64},
-    {"item": "minecraft:emerald_block", "count": 64}
+    {"item": "minecraft:iron_block", "count": 64},
+    {"item": "minecraft:diamond_block", "count": 64},
+    {"item": "minecraft:iron_block", "count": 64},
+    {"item": "oritech:electrum_block", "count": 64},
+    {"item": "projecttitancore:voice_of_the_titan", "count": 1},
+    {"item": "oritech:electrum_block", "count": 64},
+    {"item": "minecraft:iron_block", "count": 64},
+    {"item": "oritech:energite_block", "count": 64},
+    {"item": "minecraft:iron_block", "count": 64}
   ],
-  "fluid": {"tag": "c:experience", "amount": 72000},
+  "fluid": {"fluid": "create:chocolate", "amount": 80000},
   "energy_per_tick": 15000000,
   "crafting_time": 2400,
   "result": {"id": "projecttitancore:soul_of_the_titan", "count": 1},
