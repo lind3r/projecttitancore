@@ -9,7 +9,7 @@
     {"item": "oritech:adamant_block", "count": 64},
     {"item": "minecraft:emerald_block", "count": 64},
     {"item": "oritech:duratium_block", "count": 64},
-    {"item": "minecraft:iron_block", "count": 64}
+    {"item": "enderio:dark_steel_block", "count": 64}
   ],
   "fluid": {"fluid": "oritech:still_strange_matter", "amount": 100000},
   "energy_per_tick": 200000000,
