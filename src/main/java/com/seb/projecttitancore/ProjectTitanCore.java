@@ -118,7 +118,7 @@ public class ProjectTitanCore {
     public static final DeferredItem<TitanShardItem> WILL_OF_THE_TITAN = ITEMS.registerItem("will_of_the_titan", TitanShardItem::new);
     public static final DeferredItem<TitanShardItem> VOICE_OF_THE_TITAN = ITEMS.registerItem("voice_of_the_titan", TitanShardItem::new);
     public static final DeferredItem<TitanShardItem> SOUL_OF_THE_TITAN = ITEMS.registerItem("soul_of_the_titan", TitanShardItem::new);
-    public static final DeferredItem<TitanShardItem> ASCENDANT_SHARD = ITEMS.registerItem("ascendant_shard", TitanShardItem::new);
+    public static final DeferredItem<TitanShardItem> BREATH_OF_THE_TITAN = ITEMS.registerItem("breath_of_the_titan", TitanShardItem::new);
     public static final DeferredItem<TitanShardItem> HEART_OF_THE_TITAN = ITEMS.registerItem("heart_of_the_titan", TitanShardItem::new);
 
     // Modpack-completion trophy. Dropped by the Titan Trial gateway; picking it up
@@ -155,7 +155,7 @@ public class ProjectTitanCore {
                         output.accept(WILL_OF_THE_TITAN.get());
                         output.accept(VOICE_OF_THE_TITAN.get());
                         output.accept(SOUL_OF_THE_TITAN.get());
-                        output.accept(ASCENDANT_SHARD.get());
+                        output.accept(BREATH_OF_THE_TITAN.get());
                         output.accept(HEART_OF_THE_TITAN.get());
                         output.accept(CROWN_OF_THE_TITAN.get());
                     })

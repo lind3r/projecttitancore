@@ -85,7 +85,7 @@ TIERS = {
         "S": (0xFF, 0xFF, 0xF5, 255),
     },
     9: {
-        "name": "ascendant_shard",
+        "name": "breath_of_the_titan",
         "T": (0, 0, 0, 0),
         # Holy gold
         "D": (0x94, 0x6E, 0x12, 255),
