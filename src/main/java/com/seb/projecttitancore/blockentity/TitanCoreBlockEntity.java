@@ -37,8 +37,8 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
     public static final int OUTPUT_SLOT = 9;
     public static final int TOTAL_SLOTS = 10;
     /** Buffer holds this many ticks of the active recipe's RF/t. Smooths sub-second jitter; too small to AFK-fill.
-     *  Must keep {@code rfPerTick * BUFFER_TICKS} under {@link Integer#MAX_VALUE} (~2.147B) since EnergyStorage is int-based.
-     *  At 8 ticks we can safely run recipes up to ~268M RF/t (current ceiling: T10 at 200M). */
+     *  EnergyStorage is int-based, so the buffer capacity and maxReceive are clamped to {@link Integer#MAX_VALUE}
+     *  at recipe-bind time — recipes above ~268M RF/t simply get a shorter effective buffer (down to 1 tick at T10). */
     public static final int BUFFER_TICKS = 8;
     /** External networks may push at most this multiple of recipe RF/t per tick. Stops burst-charging from capacitor banks. */
     public static final int INPUT_RATE_MULTIPLIER = 2;
@@ -185,7 +185,9 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
 
         TitanCoreRecipe recipe = match.get().value();
         int rfPerTick = recipe.energyPerTick();
-        be.energyStorage.configure(rfPerTick * BUFFER_TICKS, rfPerTick * INPUT_RATE_MULTIPLIER);
+        int capacity   = (int) Math.min((long) rfPerTick * BUFFER_TICKS,          Integer.MAX_VALUE);
+        int maxReceive = (int) Math.min((long) rfPerTick * INPUT_RATE_MULTIPLIER, Integer.MAX_VALUE);
+        be.energyStorage.configure(capacity, maxReceive);
 
         // Check output slot has space
         ItemStack outputSlot = be.itemHandler.getStackInSlot(OUTPUT_SLOT);

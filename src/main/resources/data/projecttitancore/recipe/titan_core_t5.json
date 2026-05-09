@@ -12,7 +12,7 @@
     {"item": "minecraft:iron_block", "count": 48}
   ],
   "fluid": {"fluid": "mob_grinding_utils:fluid_xp", "amount": 50000},
-  "energy_per_tick": 250000,
+  "energy_per_tick": 625000,
   "crafting_time": 1200,
   "result": {"id": "projecttitancore:echo_of_the_titan", "count": 1},
   "tier": 5

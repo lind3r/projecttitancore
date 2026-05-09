@@ -20,6 +20,7 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class TitanCoreCraftingCategory implements IRecipeCategory<TitanCoreRecipe> {
 
@@ -88,11 +89,11 @@ public class TitanCoreCraftingCategory implements IRecipeCategory<TitanCoreRecip
         guiGraphics.drawString(font, "→", 58, 23, 0x404040, false);
 
         guiGraphics.drawString(font,
-                recipe.fluidIngredient().amount() + " mB",
+                String.format(Locale.ENGLISH, "%,d mB", recipe.fluidIngredient().amount()),
                 20, 63, 0x3F76E4, false);
 
         guiGraphics.drawString(font,
-                "~" + recipe.energyPerTick() + " RF/t",
+                String.format(Locale.ENGLISH, "~%,d RF/t", recipe.energyPerTick()),
                 1, 78, 0xFF6600, false);
 
         String timeStr = (recipe.craftingTime() / 20) + "s";

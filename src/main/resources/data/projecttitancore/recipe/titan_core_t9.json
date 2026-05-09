@@ -12,7 +12,7 @@
     {"item": "minecraft:iron_block", "count": 64}
   ],
   "fluid": {"fluid": "enderio:fluid_cloud_seed_concentrated_still", "amount": 90000},
-  "energy_per_tick": 60000000,
+  "energy_per_tick": 400000000,
   "crafting_time": 3000,
   "result": {"id": "projecttitancore:breath_of_the_titan", "count": 1},
   "tier": 9

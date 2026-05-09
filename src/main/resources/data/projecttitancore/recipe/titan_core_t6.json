@@ -12,7 +12,7 @@
     {"item": "minecraft:iron_block", "count": 64}
   ],
   "fluid": {"fluid": "oritech:still_silicon_wash", "amount": 60000},
-  "energy_per_tick": 1000000,
+  "energy_per_tick": 3000000,
   "crafting_time": 1500,
   "result": {"id": "projecttitancore:will_of_the_titan", "count": 1},
   "tier": 6
