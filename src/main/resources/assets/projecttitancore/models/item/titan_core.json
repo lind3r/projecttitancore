@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "projecttitancore:item/titan_core"
-  }
+  "parent": "projecttitancore:block/titan_core"
 }
