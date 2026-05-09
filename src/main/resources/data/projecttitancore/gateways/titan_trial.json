@@ -44,13 +44,6 @@
                     "operation": "add_multiplied_total",
                     "value": 1.0
                 }
-            ],
-            "rewards": [
-                {
-                    "type": "gateways:experience",
-                    "experience": 2000,
-                    "orb_size": 50
-                }
             ]
         }
     ],
