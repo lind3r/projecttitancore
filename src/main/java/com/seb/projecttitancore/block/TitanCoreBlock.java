@@ -67,17 +67,9 @@ public class TitanCoreBlock extends BaseEntityBlock {
         return 0;
     }
 
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if (!state.is(newState.getBlock())) {
-            if (level.getBlockEntity(pos) instanceof TitanCoreBlockEntity be) {
-                for (int i = 0; i < be.itemHandler.getSlots(); i++) {
-                    Block.popResource(level, pos, be.itemHandler.getStackInSlot(i));
-                }
-            }
-        }
-        super.onRemove(state, level, pos, newState, movedByPiston);
-    }
+    // Inventory and fluid travel with the dropped item via the data-component round-trip
+    // (see TitanCoreBlockEntity.collectImplicitComponents + loot_table/blocks/titan_core.json),
+    // so nothing is ejected on removal — vanilla cleanup of the BE is sufficient.
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,

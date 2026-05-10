@@ -7,6 +7,9 @@ import com.seb.projecttitancore.recipe.TitanCoreRecipe;
 import com.seb.projecttitancore.recipe.TitanCoreRecipeInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.network.chat.Component;
@@ -19,12 +22,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -160,6 +166,56 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
         }
         fluidTank.readFromNBT(registries, tag.getCompound("Fluid"));
         titanTier = tag.getInt("TitanTier");
+    }
+
+    // Round-trip projection tier, inventory, and fluid across break/place. The matching
+    // loot-table `copy_components` function writes these three components onto the dropped
+    // item; vanilla applies them back via applyImplicitComponents when the block is replaced.
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        if (titanTier > 0) {
+            components.set(ProjectTitanCore.TITAN_TIER_COMPONENT.get(), titanTier);
+        }
+        NonNullList<ItemStack> inv = NonNullList.withSize(TOTAL_SLOTS, ItemStack.EMPTY);
+        for (int i = 0; i < TOTAL_SLOTS; i++) {
+            inv.set(i, itemHandler.getStackInSlot(i));
+        }
+        components.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(inv));
+        FluidStack fluid = fluidTank.getFluid();
+        if (!fluid.isEmpty()) {
+            components.set(ProjectTitanCore.TITAN_FLUID_COMPONENT.get(), SimpleFluidContent.copyOf(fluid));
+        }
+    }
+
+    @Override
+    protected void applyImplicitComponents(BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        Integer tier = input.get(ProjectTitanCore.TITAN_TIER_COMPONENT.get());
+        if (tier != null) {
+            titanTier = tier;
+        }
+        ItemContainerContents container = input.get(DataComponents.CONTAINER);
+        if (container != null) {
+            NonNullList<ItemStack> inv = NonNullList.withSize(TOTAL_SLOTS, ItemStack.EMPTY);
+            container.copyInto(inv);
+            for (int i = 0; i < TOTAL_SLOTS; i++) {
+                itemHandler.setStackInSlot(i, inv.get(i));
+            }
+        }
+        SimpleFluidContent fluid = input.get(ProjectTitanCore.TITAN_FLUID_COMPONENT.get());
+        if (fluid != null) {
+            fluidTank.setFluid(fluid.copy());
+        }
+    }
+
+    /** Strip the redundant NBT keys when this BE is serialised onto a stack — the same values
+     *  are now carried as data components. Keeps pick-block / silk-touch from double-storing. */
+    @Override
+    public void removeComponentsFromTag(CompoundTag tag) {
+        tag.remove("TitanTier");
+        tag.remove("Inventory");
+        tag.remove("Fluid");
     }
 
     @Override

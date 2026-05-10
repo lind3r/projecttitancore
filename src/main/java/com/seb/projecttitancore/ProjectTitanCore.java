@@ -1,21 +1,26 @@
 package com.seb.projecttitancore;
 
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
 import com.seb.projecttitancore.block.TitanCoreBlock;
 import com.seb.projecttitancore.blockentity.TitanCoreBlockEntity;
 import com.seb.projecttitancore.events.WorldTierBridge;
+import com.seb.projecttitancore.item.TitanCoreBlockItem;
 import com.seb.projecttitancore.item.TitanRelicItem;
 import com.seb.projecttitancore.item.TitanShardItem;
 import com.seb.projecttitancore.menu.TitanCoreMenu;
 import com.seb.projecttitancore.recipe.TitanCoreRecipe;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -29,6 +34,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -51,6 +57,22 @@ public class ProjectTitanCore {
             DeferredRegister.create(Registries.RECIPE_SERIALIZER, MODID);
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
             DeferredRegister.create(Registries.SOUND_EVENT, MODID);
+    public static final DeferredRegister.DataComponents DATA_COMPONENT_TYPES =
+            DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MODID);
+
+    // Titan Core preserves its projection tier, full inventory, and fluid across break/place
+    // via these implicit components on the dropped item. The BE's collect/applyImplicitComponents
+    // round-trip the values; the loot table's copy_components function copies them onto the drop.
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> TITAN_TIER_COMPONENT =
+            DATA_COMPONENT_TYPES.registerComponentType("titan_tier",
+                    builder -> builder
+                            .persistent(Codec.INT)
+                            .networkSynchronized(ByteBufCodecs.VAR_INT));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleFluidContent>> TITAN_FLUID_COMPONENT =
+            DATA_COMPONENT_TYPES.registerComponentType("titan_fluid",
+                    builder -> builder
+                            .persistent(SimpleFluidContent.CODEC)
+                            .networkSynchronized(SimpleFluidContent.STREAM_CODEC));
 
     private static DeferredHolder<SoundEvent, SoundEvent> registerSound(String name) {
         return SOUND_EVENTS.register(name,
@@ -76,7 +98,8 @@ public class ProjectTitanCore {
                     .noOcclusion()
                     .lightLevel(state -> state.getValue(TitanCoreBlock.CRAFTING) ? 15 : 0)));
 
-    public static final DeferredItem<BlockItem> TITAN_CORE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("titan_core", TITAN_CORE_BLOCK);
+    public static final DeferredItem<TitanCoreBlockItem> TITAN_CORE_BLOCK_ITEM = ITEMS.register("titan_core",
+            () -> new TitanCoreBlockItem(TITAN_CORE_BLOCK.get(), new Item.Properties()));
 
     private static BlockBehaviour.Properties holyBrickProps() {
         return BlockBehaviour.Properties.of()
@@ -181,6 +204,7 @@ public class ProjectTitanCore {
         RECIPE_TYPES.register(modEventBus);
         RECIPE_SERIALIZERS.register(modEventBus);
         SOUND_EVENTS.register(modEventBus);
+        DATA_COMPONENT_TYPES.register(modEventBus);
         modEventBus.addListener(ProjectTitanCore::registerCapabilities);
         WorldTierBridge.registerArchitecturyEvents();
     }
