@@ -22,22 +22,26 @@ PALETTE = {
     "S": (0xFF, 0xFC, 0xAF, 255),      # halo bright (active)
 }
 
-# Crown of the Titan — three jewel-tipped spires above a gold tiara band.
-# Jewel cols (2/7/12) are the same in spire row 3 and body row 8 → vertical accent.
+# Crown of the Titan — three tall jewel-tipped spires above a thin gold band.
+# Layout is 3-4-3: outer spires are 3 cols wide (DLD), the centre spire is
+# 4 cols (DLLD) so the whole crown can be perfectly mirrored around the
+# image's vertical centerline (between cols 7 and 8). The centre spire's
+# extra width also gives it a slight "main spire" hierarchy.
+# Inset band jewels at cols 3 / 7-8 / 12 align vertically with each spire.
 CROWN_GRID = [
     "TTTTTTTTTTTTTTTT",  # 0
     "TTTTTTTTTTTTTTTT",  # 1
     "TTTTTTTTTTTTTTTT",  # 2
-    "TTSTTTTSTTTTSTTT",  # 3 — jewel tips
-    "TDLDTTDLDTTDLDTT",  # 4 — frame around tips
-    "DDDDDDDDDDDDDDDD",  # 5 — top of band
-    "DLLLLLLLLLLLLLLD",  # 6 — band top highlight
-    "DLGGGGGGGGGGGGLD",  # 7 — gold body
-    "DLSGGGGSGGGGSGLD",  # 8 — body with 3 inset jewels
-    "DLGGGGGGGGGGGGLD",  # 9 — gold body
-    "DLLGGGGGGGGGGLLD",  # 10 — body inner highlight
-    "DDLLLLLLLLLLLLDD",  # 11 — bottom highlight
-    "TDDDDDDDDDDDDDDT",  # 12 — bottom dark rim
+    "TTTSTTTSSTTTSTTT",  # 3 — jewel tips (cols 3, 7-8, 12)
+    "TTDLDTDLLDTDLDTT",  # 4 — frame + neck highlight
+    "TTDGDTDGGDTDGDTT",  # 5 — spire stem
+    "TTDGDTDGGDTDGDTT",  # 6 — spire stem
+    "TTDGDTDGGDTDGDTT",  # 7 — spire stem
+    "TDDDDDDDDDDDDDDT",  # 8 — band top dark rim
+    "TDLLLLLLLLLLLLDT",  # 9 — band top highlight
+    "TDGSGGGSSGGGSGDT",  # 10 — band body w/ inset jewels (aligned to spires)
+    "TDLLLLLLLLLLLLDT",  # 11 — band bottom highlight
+    "TDDDDDDDDDDDDDDT",  # 12 — band bottom dark rim
     "TTTTTTTTTTTTTTTT",  # 13
     "TTTTTTTTTTTTTTTT",  # 14
     "TTTTTTTTTTTTTTTT",  # 15
