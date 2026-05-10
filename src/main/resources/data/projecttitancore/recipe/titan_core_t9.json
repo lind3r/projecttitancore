@@ -1,15 +1,15 @@
 {
   "type": "projecttitancore:titan_core",
   "inputs": [
-    {"item": "minecraft:iron_block", "count": 64},
+    {"item": "projecttitancore:compressed_log", "count": 64},
     {"item": "minecraft:diamond_block", "count": 64},
-    {"item": "minecraft:iron_block", "count": 64},
+    {"item": "projecttitancore:compressed_log", "count": 64},
     {"item": "oritech:silicon_block", "count": 64},
     {"item": "projecttitancore:soul_of_the_titan", "count": 1},
     {"item": "oritech:silicon_block", "count": 64},
-    {"item": "minecraft:iron_block", "count": 64},
+    {"item": "projecttitancore:compressed_log", "count": 64},
     {"item": "minecraft:netherite_block", "count": 64},
-    {"item": "minecraft:iron_block", "count": 64}
+    {"item": "projecttitancore:compressed_log", "count": 64}
   ],
   "fluid": {"fluid": "enderio:fluid_cloud_seed_concentrated_still", "amount": 90000},
   "energy_per_tick": 32000000,
