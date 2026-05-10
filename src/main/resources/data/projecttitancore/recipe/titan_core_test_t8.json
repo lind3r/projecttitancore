@@ -1,0 +1,19 @@
+{
+  "type": "projecttitancore:titan_core",
+  "inputs": [
+    {"item": "minecraft:clay_ball", "count": 1},
+    {"item": "minecraft:clay_ball", "count": 1},
+    {"item": "minecraft:clay_ball", "count": 1},
+    {"item": "minecraft:clay_ball", "count": 1},
+    {"item": "minecraft:clay_ball", "count": 1},
+    {"item": "minecraft:clay_ball", "count": 1},
+    {"item": "minecraft:clay_ball", "count": 1},
+    {"item": "minecraft:clay_ball", "count": 1},
+    {"item": "minecraft:clay_ball", "count": 1}
+  ],
+  "fluid": {"fluid": "minecraft:water", "amount": 10000},
+  "energy_per_tick": 8000000,
+  "crafting_time": 2400,
+  "result": {"id": "projecttitancore:soul_of_the_titan", "count": 1},
+  "tier": 8
+}

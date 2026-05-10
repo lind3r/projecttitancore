@@ -1,0 +1,19 @@
+{
+  "type": "projecttitancore:titan_core",
+  "inputs": [
+    {"item": "minecraft:flint", "count": 1},
+    {"item": "minecraft:flint", "count": 1},
+    {"item": "minecraft:flint", "count": 1},
+    {"item": "minecraft:flint", "count": 1},
+    {"item": "minecraft:flint", "count": 1},
+    {"item": "minecraft:flint", "count": 1},
+    {"item": "minecraft:flint", "count": 1},
+    {"item": "minecraft:flint", "count": 1},
+    {"item": "minecraft:flint", "count": 1}
+  ],
+  "fluid": {"fluid": "minecraft:water", "amount": 10000},
+  "energy_per_tick": 32000000,
+  "crafting_time": 3000,
+  "result": {"id": "projecttitancore:breath_of_the_titan", "count": 1},
+  "tier": 9
+}

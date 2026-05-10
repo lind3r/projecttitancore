@@ -1,0 +1,19 @@
+{
+  "type": "projecttitancore:titan_core",
+  "inputs": [
+    {"item": "minecraft:sand", "count": 1},
+    {"item": "minecraft:sand", "count": 1},
+    {"item": "minecraft:sand", "count": 1},
+    {"item": "minecraft:sand", "count": 1},
+    {"item": "minecraft:sand", "count": 1},
+    {"item": "minecraft:sand", "count": 1},
+    {"item": "minecraft:sand", "count": 1},
+    {"item": "minecraft:sand", "count": 1},
+    {"item": "minecraft:sand", "count": 1}
+  ],
+  "fluid": {"fluid": "minecraft:water", "amount": 10000},
+  "energy_per_tick": 300000,
+  "crafting_time": 1500,
+  "result": {"id": "projecttitancore:will_of_the_titan", "count": 1},
+  "tier": 6
+}

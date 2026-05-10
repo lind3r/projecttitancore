@@ -1,0 +1,19 @@
+{
+  "type": "projecttitancore:titan_core",
+  "inputs": [
+    {"item": "minecraft:cobblestone", "count": 1},
+    {"item": "minecraft:cobblestone", "count": 1},
+    {"item": "minecraft:cobblestone", "count": 1},
+    {"item": "minecraft:cobblestone", "count": 1},
+    {"item": "minecraft:cobblestone", "count": 1},
+    {"item": "minecraft:cobblestone", "count": 1},
+    {"item": "minecraft:cobblestone", "count": 1},
+    {"item": "minecraft:cobblestone", "count": 1},
+    {"item": "minecraft:cobblestone", "count": 1}
+  ],
+  "fluid": {"fluid": "minecraft:water", "amount": 10000},
+  "energy_per_tick": 3000,
+  "crafting_time": 600,
+  "result": {"id": "projecttitancore:ember_of_the_titan", "count": 1},
+  "tier": 2
+}

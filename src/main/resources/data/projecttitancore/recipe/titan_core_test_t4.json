@@ -1,0 +1,19 @@
+{
+  "type": "projecttitancore:titan_core",
+  "inputs": [
+    {"item": "minecraft:stick", "count": 1},
+    {"item": "minecraft:stick", "count": 1},
+    {"item": "minecraft:stick", "count": 1},
+    {"item": "minecraft:stick", "count": 1},
+    {"item": "minecraft:stick", "count": 1},
+    {"item": "minecraft:stick", "count": 1},
+    {"item": "minecraft:stick", "count": 1},
+    {"item": "minecraft:stick", "count": 1},
+    {"item": "minecraft:stick", "count": 1}
+  ],
+  "fluid": {"fluid": "minecraft:water", "amount": 10000},
+  "energy_per_tick": 30000,
+  "crafting_time": 1000,
+  "result": {"id": "projecttitancore:pulse_of_the_titan", "count": 1},
+  "tier": 4
+}
