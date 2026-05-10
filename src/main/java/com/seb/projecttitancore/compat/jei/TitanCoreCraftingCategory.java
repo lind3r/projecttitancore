@@ -86,7 +86,13 @@ public class TitanCoreCraftingCategory implements IRecipeCategory<TitanCoreRecip
                      double mouseX, double mouseY) {
         var font = Minecraft.getInstance().font;
 
-        guiGraphics.drawString(font, "→", 58, 23, 0x404040, false);
+        String arrow = "→";
+        int aw = font.width(arrow);
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(75, 28, 0);
+        guiGraphics.pose().scale(1.75f, 1.75f, 1f);
+        guiGraphics.drawString(font, arrow, -aw / 2, -font.lineHeight / 2, 0x404040, false);
+        guiGraphics.pose().popPose();
 
         guiGraphics.drawString(font,
                 String.format(Locale.ENGLISH, "%,d mB", recipe.fluidIngredient().amount()),
