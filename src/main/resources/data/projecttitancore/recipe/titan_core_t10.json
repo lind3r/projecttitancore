@@ -2,7 +2,7 @@
   "type": "projecttitancore:titan_core",
   "inputs": [
     {"item": "minecraft:netherite_block", "count": 64},
-    {"item": "minecraft:diamond_block", "count": 64},
+    {"item": "minecraft:nether_star", "count": 64},
     {"item": "oritech:energite_block", "count": 64},
     {"item": "oritech:silicon_block", "count": 64},
     {"item": "projecttitancore:breath_of_the_titan", "count": 1},
