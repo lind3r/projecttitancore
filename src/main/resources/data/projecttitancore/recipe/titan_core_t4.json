@@ -12,7 +12,7 @@
     {"item": "minecraft:iron_block", "count": 32}
   ],
   "fluid": {"fluid": "mekanism:nutritional_paste", "amount": 40000},
-  "energy_per_tick": 125000,
+  "energy_per_tick": 30000,
   "crafting_time": 1000,
   "result": {"id": "projecttitancore:pulse_of_the_titan", "count": 1},
   "tier": 4
