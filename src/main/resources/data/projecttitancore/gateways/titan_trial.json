@@ -31,20 +31,7 @@
                     "entity": "cataclysm:ignis"
                 }
             ],
-            "modifiers": [
-                {
-                    "type": "gateways:attribute",
-                    "attribute": "minecraft:generic.max_health",
-                    "operation": "add_multiplied_total",
-                    "value": 1.0
-                },
-                {
-                    "type": "gateways:attribute",
-                    "attribute": "minecraft:generic.attack_damage",
-                    "operation": "add_multiplied_total",
-                    "value": 1.0
-                }
-            ]
+            "modifiers": []
         }
     ],
     "rewards": [
