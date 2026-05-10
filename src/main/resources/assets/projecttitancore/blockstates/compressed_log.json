@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "projecttitancore:block/compressed_log" }
+  }
+}

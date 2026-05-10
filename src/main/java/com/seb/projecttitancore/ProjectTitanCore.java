@@ -110,6 +110,14 @@ public class ProjectTitanCore {
             () -> new Block(holyBrickProps()));
     public static final DeferredItem<BlockItem> ENGRAVED_HOLY_BRICKS_ITEM = ITEMS.registerSimpleBlockItem("engraved_holy_bricks", ENGRAVED_HOLY_BRICKS);
 
+    public static final DeferredBlock<Block> COMPRESSED_LOG = BLOCKS.register("compressed_log",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(2.5f)
+                    .sound(SoundType.WOOD)
+                    .ignitedByLava()));
+    public static final DeferredItem<BlockItem> COMPRESSED_LOG_ITEM = ITEMS.registerSimpleBlockItem("compressed_log", COMPRESSED_LOG);
+
     public static final DeferredItem<TitanShardItem> MOTE_OF_THE_TITAN = ITEMS.registerItem("mote_of_the_titan", TitanShardItem::new);
     public static final DeferredItem<TitanShardItem> EMBER_OF_THE_TITAN = ITEMS.registerItem("ember_of_the_titan", TitanShardItem::new);
     public static final DeferredItem<TitanShardItem> SPARK_OF_THE_TITAN = ITEMS.registerItem("spark_of_the_titan", TitanShardItem::new);
@@ -147,6 +155,7 @@ public class ProjectTitanCore {
                         output.accept(HOLY_BRICK_TILES_ITEM.get());
                         output.accept(GILDED_HOLY_BRICKS_ITEM.get());
                         output.accept(ENGRAVED_HOLY_BRICKS_ITEM.get());
+                        output.accept(COMPRESSED_LOG_ITEM.get());
                         output.accept(MOTE_OF_THE_TITAN.get());
                         output.accept(EMBER_OF_THE_TITAN.get());
                         output.accept(SPARK_OF_THE_TITAN.get());
