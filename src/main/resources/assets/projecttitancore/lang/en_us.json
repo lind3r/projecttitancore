@@ -26,5 +26,6 @@
   "projecttitancore.titan_trial": "Project Titan",
   "tooltip.projecttitancore.titan_trial_reward": "Awarded only to those who slay every boss in the Titan's gauntlet.",
   "tooltip.projecttitancore.titan_trial_warning_1": "⚠ DEVASTATION GUARANTEED",
-  "tooltip.projecttitancore.titan_trial_warning_2": "Open only in a dedicated arena, far from your base."
+  "tooltip.projecttitancore.titan_trial_warning_2": "Open only in a dedicated arena, far from your base.",
+  "tooltip.projecttitancore.void_fluid": "Void fluid"
 }

@@ -6,8 +6,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -37,14 +39,22 @@ public class TitanCoreScreen extends AbstractContainerScreen<TitanCoreMenu> {
     private static final int ARROW_W      = 22;
     private static final int ARROW_H      = 16;
 
+    // Void-fluid button: 8×8, sitting to the right of the fluid gauge with its
+    // bottom edge flush with the gauge's bottom edge.
+    private static final int VOID_BTN_SIZE = 8;
+    private static final int VOID_BTN_X    = FLUID_BAR_X + FLUID_BAR_WIDTH + 2;                    // 86
+    // +1 accounts for the gauge's 1px border — visual bottom is at FLUID_BAR_Y + FLUID_BAR_HEIGHT.
+    private static final int VOID_BTN_Y    = FLUID_BAR_Y + FLUID_BAR_HEIGHT + 1 - VOID_BTN_SIZE;   // 62
+
     // Holy palette — see CLAUDE.md "Visual Theme".
     private static final int COLOR_BG          = 0xFFECE4D0; // ivory marble
     private static final int COLOR_FRAME       = 0xFF463612; // dark gold rim — outer GUI frame
     private static final int COLOR_BORDER      = 0xFF8A6620; // gold trim — inner dividers, slot/gauge borders
     private static final int COLOR_SLOT_BG     = 0xFF2A1F08; // dark warm slot well
     private static final int COLOR_OUTPUT_BG   = 0xFF4A3818; // warmer than slot bg, marks the sacred output
-    private static final int COLOR_ENERGY_FILL = 0xFFE53A2F; // RF/FE red — convention across most tech mods
+    private static final int COLOR_ENERGY_FILL = 0xFFB52218; // RF/FE red — shifted darker to sit closer to the deep-maroon well
     private static final int COLOR_ENERGY_BG   = 0xFF2A0808; // deep maroon well to match
+    private static final int COLOR_VOID_X      = 0xFFE53A2F; // bright red for the void-fluid X — kept loud as a cancel cue
     private static final int COLOR_FLUID_BG    = 0xFF1F2A38;
     private static final int COLOR_ARROW_BG    = 0xFF1F1608;
     private static final int COLOR_ARROW_FILL  = 0xFFFFE054;
@@ -131,6 +141,19 @@ public class TitanCoreScreen extends AbstractContainerScreen<TitanCoreMenu> {
             g.fill(ex, ey + ENERGY_BAR_HEIGHT - fillH,
                    ex + ENERGY_BAR_WIDTH, ey + ENERGY_BAR_HEIGHT, COLOR_ENERGY_FILL);
         }
+
+        // --- Void-fluid button: black frame, ivory interior, red X ---
+        drawVoidFluidButton(g, x + VOID_BTN_X, y + VOID_BTN_Y);
+    }
+
+    private static void drawVoidFluidButton(GuiGraphics g, int bx, int by) {
+        g.fill(bx, by, bx + VOID_BTN_SIZE, by + VOID_BTN_SIZE, 0xFF000000);             // black frame
+        g.fill(bx + 1, by + 1, bx + VOID_BTN_SIZE - 1, by + VOID_BTN_SIZE - 1, COLOR_BG); // ivory interior (6×6)
+        // Red X across the 6×6 interior
+        for (int i = 0; i < 6; i++) {
+            g.fill(bx + 1 + i, by + 1 + i, bx + 2 + i, by + 2 + i, COLOR_VOID_X); // top-left → bottom-right
+            g.fill(bx + 1 + i, by + 6 - i, bx + 2 + i, by + 7 - i, COLOR_VOID_X); // bottom-left → top-right
+        }
     }
 
     @Override
@@ -154,10 +177,12 @@ public class TitanCoreScreen extends AbstractContainerScreen<TitanCoreMenu> {
                     mouseX, mouseY);
         }
 
-        // Fluid gauge tooltip — fluid name (if any) above the amount/capacity line
+        // Fluid gauge tooltip — fluid name (if any) above the amount/capacity line.
+        // Skip when the cursor is over the void-fluid button (overlaps the gauge's bottom-right footprint).
         int fx = leftPos + FLUID_BAR_X - 1;
         int fy = topPos  + FLUID_BAR_Y  - 1;
-        if (mouseX >= fx && mouseX < fx + FLUID_BAR_WIDTH + 2
+        if (!isOverVoidButton(mouseX, mouseY)
+                && mouseX >= fx && mouseX < fx + FLUID_BAR_WIDTH + 2
                 && mouseY >= fy && mouseY < fy + FLUID_BAR_HEIGHT + 2) {
             FluidStack stack = getDisplayedFluid();
             java.util.List<Component> lines = new java.util.ArrayList<>(2);
@@ -167,6 +192,34 @@ public class TitanCoreScreen extends AbstractContainerScreen<TitanCoreMenu> {
             lines.add(Component.literal(menu.getFluidAmount() + " / " + menu.getFluidCapacity() + " mB"));
             g.renderComponentTooltip(font, lines, mouseX, mouseY);
         }
+
+        // Void-fluid button tooltip
+        if (isOverVoidButton(mouseX, mouseY)) {
+            g.renderTooltip(font,
+                    Component.translatable("tooltip.projecttitancore.void_fluid"),
+                    mouseX, mouseY);
+        }
+    }
+
+    private boolean isOverVoidButton(int mouseX, int mouseY) {
+        int bx = leftPos + VOID_BTN_X;
+        int by = topPos  + VOID_BTN_Y;
+        return mouseX >= bx && mouseX < bx + VOID_BTN_SIZE
+                && mouseY >= by && mouseY < by + VOID_BTN_SIZE;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0 && isOverVoidButton((int) mouseX, (int) mouseY)) {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.gameMode != null) {
+                mc.gameMode.handleInventoryButtonClick(menu.containerId, TitanCoreMenu.BUTTON_VOID_FLUID);
+            }
+            mc.getSoundManager().play(
+                    SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK.value(), 1.0F));
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     /** Reads the live fluid from the client-side BE (kept in sync via sendBlockUpdated on tank changes). */

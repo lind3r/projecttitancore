@@ -11,6 +11,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
@@ -23,6 +24,9 @@ public class TitanCoreMenu extends AbstractContainerMenu {
     private static final int PLAYER_INV_END      = PLAYER_INV_START + 27;                  // 37
     private static final int HOTBAR_START        = PLAYER_INV_END;                         // 37
     private static final int HOTBAR_END          = HOTBAR_START + 9;                       // 46
+
+    /** Button id for the void-fluid button. Sent via {@link net.minecraft.client.multiplayer.MultiPlayerGameMode#handleInventoryButtonClick}. */
+    public static final int BUTTON_VOID_FLUID = 0;
 
     private final ContainerData data;
     private final BlockPos blockPos;
@@ -79,6 +83,17 @@ public class TitanCoreMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player player) {
         return true;
+    }
+
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        if (id == BUTTON_VOID_FLUID) {
+            if (player.level().getBlockEntity(blockPos) instanceof TitanCoreBlockEntity be) {
+                be.fluidTank.setFluid(FluidStack.EMPTY);
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
