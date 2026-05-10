@@ -12,7 +12,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -29,6 +28,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -139,8 +139,10 @@ public class ProjectTitanCore {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TitanCoreBlockEntity>> TITAN_CORE_BLOCK_ENTITY =
             BLOCK_ENTITY_TYPES.register("titan_core", () -> BlockEntityType.Builder.of(TitanCoreBlockEntity::new, TITAN_CORE_BLOCK.get()).build(null));
 
+    // IMenuTypeExtension.create lets us pass extra data (the BlockPos) to the client
+    // constructor — needed so the screen can resolve the BE for live FluidStack lookup.
     public static final DeferredHolder<MenuType<?>, MenuType<TitanCoreMenu>> TITAN_CORE_MENU =
-            MENU_TYPES.register("titan_core", () -> new MenuType<>(TitanCoreMenu::new, FeatureFlags.VANILLA_SET));
+            MENU_TYPES.register("titan_core", () -> IMenuTypeExtension.create(TitanCoreMenu::new));
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> PROJECT_TITAN_TAB = CREATIVE_MODE_TABS.register("project_titan",
             () -> CreativeModeTab.builder()

@@ -98,7 +98,9 @@ public class TitanCoreBlock extends BaseEntityBlock {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof TitanCoreBlockEntity be) {
             if (!level.isClientSide()) {
-                player.openMenu(be);
+                // BlockPos is written to the open-menu buffer so the client menu can resolve
+                // the BE for live FluidStack lookup (rendering the actual fluid sprite).
+                player.openMenu(be, buf -> buf.writeBlockPos(pos));
             }
             return InteractionResult.SUCCESS;
         }

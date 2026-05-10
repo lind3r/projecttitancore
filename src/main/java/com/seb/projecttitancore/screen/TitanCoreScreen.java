@@ -1,10 +1,18 @@
 package com.seb.projecttitancore.screen;
 
+import com.seb.projecttitancore.blockentity.TitanCoreBlockEntity;
 import com.seb.projecttitancore.menu.TitanCoreMenu;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class TitanCoreScreen extends AbstractContainerScreen<TitanCoreMenu> {
     private static final int GUI_WIDTH  = 176;
@@ -35,9 +43,8 @@ public class TitanCoreScreen extends AbstractContainerScreen<TitanCoreMenu> {
     private static final int COLOR_BORDER      = 0xFF8A6620; // gold trim — inner dividers, slot/gauge borders
     private static final int COLOR_SLOT_BG     = 0xFF2A1F08; // dark warm slot well
     private static final int COLOR_OUTPUT_BG   = 0xFF4A3818; // warmer than slot bg, marks the sacred output
-    private static final int COLOR_ENERGY_FILL = 0xFFFFE054; // gold highlight
-    private static final int COLOR_ENERGY_BG   = 0xFF1F1608;
-    private static final int COLOR_FLUID_FILL  = 0xFF8AB6D8; // soft holy blue
+    private static final int COLOR_ENERGY_FILL = 0xFFE53A2F; // RF/FE red — convention across most tech mods
+    private static final int COLOR_ENERGY_BG   = 0xFF2A0808; // deep maroon well to match
     private static final int COLOR_FLUID_BG    = 0xFF1F2A38;
     private static final int COLOR_ARROW_BG    = 0xFF1F1608;
     private static final int COLOR_ARROW_FILL  = 0xFFFFE054;
@@ -103,12 +110,13 @@ public class TitanCoreScreen extends AbstractContainerScreen<TitanCoreMenu> {
         int fy = y + FLUID_BAR_Y;
         g.fill(fx - 1, fy - 1, fx + FLUID_BAR_WIDTH + 1, fy + FLUID_BAR_HEIGHT + 1, COLOR_BORDER);
         g.fill(fx, fy, fx + FLUID_BAR_WIDTH, fy + FLUID_BAR_HEIGHT, COLOR_FLUID_BG);
-        int fluid    = menu.getFluidAmount();
-        int capacity = menu.getFluidCapacity();
-        if (capacity > 0 && fluid > 0) {
-            int fillH = (int) ((long) fluid * FLUID_BAR_HEIGHT / capacity);
-            g.fill(fx, fy + FLUID_BAR_HEIGHT - fillH,
-                   fx + FLUID_BAR_WIDTH, fy + FLUID_BAR_HEIGHT, COLOR_FLUID_FILL);
+        int fluidAmount   = menu.getFluidAmount();
+        int fluidCapacity = menu.getFluidCapacity();
+        FluidStack fluidStack = getDisplayedFluid();
+        if (fluidCapacity > 0 && fluidAmount > 0 && !fluidStack.isEmpty()) {
+            int fillH = (int) ((long) fluidAmount * FLUID_BAR_HEIGHT / fluidCapacity);
+            renderFluidTiled(g, fx, fy + FLUID_BAR_HEIGHT - fillH,
+                    FLUID_BAR_WIDTH, fillH, fluidStack);
         }
 
         // --- Energy bar ---
@@ -146,15 +154,60 @@ public class TitanCoreScreen extends AbstractContainerScreen<TitanCoreMenu> {
                     mouseX, mouseY);
         }
 
-        // Fluid gauge tooltip
+        // Fluid gauge tooltip — fluid name (if any) above the amount/capacity line
         int fx = leftPos + FLUID_BAR_X - 1;
         int fy = topPos  + FLUID_BAR_Y  - 1;
         if (mouseX >= fx && mouseX < fx + FLUID_BAR_WIDTH + 2
                 && mouseY >= fy && mouseY < fy + FLUID_BAR_HEIGHT + 2) {
-            g.renderTooltip(font,
-                    Component.literal(menu.getFluidAmount() + " / " + menu.getFluidCapacity() + " mB"),
-                    mouseX, mouseY);
+            FluidStack stack = getDisplayedFluid();
+            java.util.List<Component> lines = new java.util.ArrayList<>(2);
+            if (!stack.isEmpty()) {
+                lines.add(stack.getHoverName());
+            }
+            lines.add(Component.literal(menu.getFluidAmount() + " / " + menu.getFluidCapacity() + " mB"));
+            g.renderComponentTooltip(font, lines, mouseX, mouseY);
         }
+    }
+
+    /** Reads the live fluid from the client-side BE (kept in sync via sendBlockUpdated on tank changes). */
+    private FluidStack getDisplayedFluid() {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null) return FluidStack.EMPTY;
+        BlockEntity be = mc.level.getBlockEntity(menu.getBlockPos());
+        return be instanceof TitanCoreBlockEntity tbe ? tbe.fluidTank.getFluid() : FluidStack.EMPTY;
+    }
+
+    /**
+     * Tiles the fluid's still texture from the bottom up, clipping the topmost partial tile via scissor.
+     * Animated sprites (lava, custom mod fluids) animate naturally because the atlas sprite owns the frame.
+     */
+    private static void renderFluidTiled(GuiGraphics g, int x, int y, int width, int height, FluidStack stack) {
+        IClientFluidTypeExtensions ext = IClientFluidTypeExtensions.of(stack.getFluid());
+        ResourceLocation stillTex = ext.getStillTexture(stack);
+        TextureAtlasSprite sprite = Minecraft.getInstance()
+                .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                .apply(stillTex);
+        int tint = ext.getTintColor(stack);
+        int alpha = (tint >>> 24) & 0xFF;
+        if (alpha == 0) alpha = 0xFF; // some fluids return ARGB with alpha=0 meaning "no tint"
+        float r = ((tint >> 16) & 0xFF) / 255f;
+        float gn = ((tint >> 8)  & 0xFF) / 255f;
+        float b =  (tint        & 0xFF) / 255f;
+        g.setColor(r, gn, b, alpha / 255f);
+
+        int yBottom = y + height;
+        int xTiles  = (width  + 15) / 16;
+        int yTiles  = (height + 15) / 16;
+        g.enableScissor(x, y, x + width, yBottom);
+        for (int xi = 0; xi < xTiles; xi++) {
+            for (int yi = 0; yi < yTiles; yi++) {
+                int tileX = x + xi * 16;
+                int tileY = yBottom - (yi + 1) * 16;
+                g.blit(tileX, tileY, 0, 16, 16, sprite);
+            }
+        }
+        g.disableScissor();
+        g.setColor(1f, 1f, 1f, 1f);
     }
 
     private static void drawSlot(GuiGraphics g, int x, int y, int fillColor) {

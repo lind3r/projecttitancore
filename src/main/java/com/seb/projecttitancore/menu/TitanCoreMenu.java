@@ -2,6 +2,8 @@ package com.seb.projecttitancore.menu;
 
 import com.seb.projecttitancore.ProjectTitanCore;
 import com.seb.projecttitancore.blockentity.TitanCoreBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -23,19 +25,22 @@ public class TitanCoreMenu extends AbstractContainerMenu {
     private static final int HOTBAR_END          = HOTBAR_START + 9;                       // 46
 
     private final ContainerData data;
+    private final BlockPos blockPos;
 
-    // Client-side constructor — called by MenuType from network packet
-    public TitanCoreMenu(int containerId, Inventory playerInventory) {
+    // Client-side constructor — called by IMenuTypeExtension from the network buffer.
+    public TitanCoreMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
         this(containerId, playerInventory,
                 new ItemStackHandler(TitanCoreBlockEntity.TOTAL_SLOTS),
-                new SimpleContainerData(TitanCoreBlockEntity.CONTAINER_DATA_COUNT));
+                new SimpleContainerData(TitanCoreBlockEntity.CONTAINER_DATA_COUNT),
+                buf.readBlockPos());
     }
 
     // Server-side constructor — called from TitanCoreBlockEntity.createMenu
     public TitanCoreMenu(int containerId, Inventory playerInventory,
-                         IItemHandler itemHandler, ContainerData data) {
+                         IItemHandler itemHandler, ContainerData data, BlockPos blockPos) {
         super(ProjectTitanCore.TITAN_CORE_MENU.get(), containerId);
         this.data = data;
+        this.blockPos = blockPos;
         checkContainerDataCount(data, TitanCoreBlockEntity.CONTAINER_DATA_COUNT);
 
         // Input slots: 3x3 grid starting at pixel (8, 17), 18px spacing
@@ -63,6 +68,7 @@ public class TitanCoreMenu extends AbstractContainerMenu {
         addDataSlots(data);
     }
 
+    public BlockPos getBlockPos()     { return blockPos; }
     public int getEnergy()            { return data.get(0); }
     public int getMaxEnergy()         { return data.get(1); }
     public int getFluidAmount()       { return data.get(2); }

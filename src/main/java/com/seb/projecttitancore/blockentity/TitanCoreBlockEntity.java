@@ -92,7 +92,16 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
         @Override
         protected void onContentsChanged() {
             setChanged();
-            if (level != null) level.invalidateCapabilities(worldPosition);
+            if (level != null) {
+                level.invalidateCapabilities(worldPosition);
+                // Push the fluid stack to client trackers so the GUI can render the actual
+                // fluid sprite. The BE's getUpdateTag/getUpdatePacket already include the
+                // fluid NBT — this just makes them fire on every fluid change.
+                if (!level.isClientSide) {
+                    BlockState st = getBlockState();
+                    level.sendBlockUpdated(worldPosition, st, st, Block.UPDATE_CLIENTS);
+                }
+            }
         }
     };
 
@@ -130,7 +139,7 @@ public class TitanCoreBlockEntity extends BlockEntity implements MenuProvider {
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new TitanCoreMenu(containerId, playerInventory, itemHandler, dataAccess);
+        return new TitanCoreMenu(containerId, playerInventory, itemHandler, dataAccess, this.worldPosition);
     }
 
     @Override
