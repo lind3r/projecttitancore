@@ -254,26 +254,27 @@ def generate_face(motif_fn, active: bool = False) -> list:
 # edges read as bevelled rather than flat. Tileable.
 # Glass: translucent ivory, slight reflective streak, mostly clear.
 # ---------------------------------------------------------------------------
-FRAME_SIZE = 16
+FRAME_SIZE = 32
 GLASS_SIZE = 16
 
 
 def frame_pixel(x: int, y: int) -> tuple:
-    """16×16 ivory-marble tile — same family as the holy_bricks palette so the
+    """Ivory-marble tile — same family as the holy_bricks palette so the
     cage reads as marble pillars rather than wooden trim. Top edge highlight,
     bottom edge shadow, gentle veining inside, with a single thin gold pinstripe
-    halfway up to keep the holy accent."""
+    halfway up to keep the holy accent. Size scales with FRAME_SIZE."""
+    vein_spacing = max(4, FRAME_SIZE // 4)         # 4 veins across the tile
     if y == 0:
         return HALO_HI
     if y == FRAME_SIZE - 1:
         return IVORY_SH
-    if y == 8:                       # gold pinstripe inlay
+    if y == FRAME_SIZE // 2:                       # gold pinstripe inlay
         return GOLD
     if x == 0:
         return blend(IVORY, HALO_HI, 0.4)
     if x == FRAME_SIZE - 1:
         return blend(IVORY, IVORY_SH, 0.4)
-    if x % 4 == 0:
+    if x % vein_spacing == 0:
         return blend(IVORY, IVORY_SH, 0.3)        # subtle vein
     if (x * 3 + y * 5) % 17 == 0:
         return IVORY_SH                            # marble fleck
