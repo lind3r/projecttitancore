@@ -11,7 +11,7 @@ A NeoForge mod for Minecraft 1.21.1 centred on the **Titan Core** — a multi-in
 ## Current content
 
 - **Titan Core** block + block entity with a custom GUI (9 input slots, 1 output slot, FE energy bar, fluid gauge, progress arrow).
-- **Custom recipe type** driven by JSON: 10 tiered chain recipes (`titan_core_t1` … `titan_core_t10`) plus a low-cost test recipe.
+- **Custom recipe type** driven by JSON: 10 tiered chain recipes (`titan_core_t1` … `titan_core_t10`).
 - **Titan Shards** in 10 tiers (`mote_of_the_titan` … `heart_of_the_titan`); each tier consumes the previous shard plus 8 bulk ingredients and a tier-appropriate fluid.
 - **Crafting beam** rendered above an active core, with emitted light at full intensity while crafting.
 - **Holographic Titan projection** above the beam — translucent voxel statue that grows as tiers are completed, in 10 cumulative anatomy slabs (plinth/feet → crowned head, one per tier).
