@@ -44,6 +44,11 @@ import java.util.Map;
  *
  * <p>{@link WorldTier#setTier} bypasses the unlock check, so granting a tier server-side
  * also bypasses the Ctrl+T menu — activation is non-optional, exactly as desired.
+ *
+ * <p>Tier transitions are <b>promotion-only</b>: both trigger paths route through
+ * {@link #promoteTo}, which compares ordinals against {@link WorldTier#getTier} and skips the
+ * write when it would be a downgrade. Prevents demotion when an earlier-tier quest is
+ * completed after a later one (out-of-order completion, quest reset, admin re-grant).
  */
 @EventBusSubscriber(modid = ProjectTitanCore.MODID)
 public final class WorldTierBridge {
@@ -71,10 +76,19 @@ public final class WorldTierBridge {
         WorldTier tier = mappings.get(quest.id);
         if (tier != null) {
             for (ServerPlayer member : event.getOnlineMembers()) {
-                WorldTier.setTier(member, tier);
+                promoteTo(member, tier);
             }
         }
         return EventResult.pass();
+    }
+
+    // Apply a tier only if it would be a promotion. Guards against demotion when an
+    // earlier-tier quest completes after a later one (out-of-order, quest reset, admin grant).
+    private static void promoteTo(ServerPlayer player, WorldTier tier) {
+        WorldTier current = WorldTier.getTier(player);
+        if (current == null || tier.ordinal() > current.ordinal()) {
+            WorldTier.setTier(player, tier);
+        }
     }
 
     @SubscribeEvent
@@ -105,7 +119,7 @@ public final class WorldTierBridge {
             }
         }
         if (highest != null) {
-            WorldTier.setTier(player, highest);
+            promoteTo(player, highest);
         }
     }
 
